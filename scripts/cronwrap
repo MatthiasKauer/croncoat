@@ -37,6 +37,9 @@ import time
 import platform
 from datetime import datetime, timedelta
 
+import threading
+import subprocess
+import StringIO
 
 #--- Handlers ----------------------------------------------
 def handle_args(sys_args):
@@ -47,12 +50,18 @@ def handle_args(sys_args):
     if sys_args.verbose is not False:
         sys_args.verbose = True
 
-    #if sys_args.fromaddr: #from won't work as key
-    #    from_addr = sys.args.fromaddr
-
+    if sys_args.enforcetime is not False:
+        sys_args.enforcetime = True
 
     if sys_args.cmd:
-        cmd = Command(sys_args.cmd)
+        print "enforcetime " + str(sys_args.enforcetime)
+        if sys_args.enforcetime:
+            cmd = ExpiringCommand( sys_args.cmd, sys_args.time)
+            cmd.Run()
+
+        else:
+            cmd = Command(sys_args.cmd)
+
         if cmd.returncode != 0:
             handle_error(sys_args, cmd)
         elif is_time_exceeded(sys_args, cmd):
@@ -163,6 +172,56 @@ def handle_test_email(sys_args):
 
 
 #--- Util ----------------------------------------------
+class ExpiringCommand(threading.Thread): #allow for killing after timeout
+    #see: http://stackoverflow.com/questions/4158502/python-kill-or-terminate-subprocess-when-timeout
+
+    def __init__(self, command, timeout):
+        threading.Thread.__init__(self)
+        self.cmd = command
+        self.timeout = parse_time_to_secs(timeout)
+        self.run_time = -1
+
+        self.stdoutIO = StringIO.StringIO()
+        self.stderrIO = StringIO.StringIO()
+        self.returncode = 0
+
+    def savereturn(self):
+        self.run_time = time.time() - self.start_time
+        self.returncode = self.p.returncode;
+        # self.stderr = subprocess.check_output(self.p)
+        # self.stdout = subprocess.check_output(self.p)
+        # self.stderr = self.stderrIO.getvalue()
+        # self.stdout = self.stdoutIO.getvalue()
+#reading PIPE from here: http://stackoverflow.com/questions/4984428/python-subprocess-get-childrens-output-to-file-and-terminal/4985080#4985080
+#THIS WAS working but blocked:
+        # self.stdout = self.p.stdout.read()
+        # self.stderr = self.p.stderr.read()
+        # print("stdout " + str(self.stdout))
+
+    def Run(self):
+        print "running ExpCommand now"
+        self.start()
+        self.join(self.timeout)
+
+        if self.is_alive():
+            print "HIT TIMEOUT"
+            self.savereturn()
+            self.p.terminate() #or self.p.kill()
+            # self.p.kill()
+            self.join()
+            self.returncode = 1;
+
+    def run(self):
+        self.start_time = time.time()
+        # self.p = subprocess.Popen(self.cmd, stdout=self.stdoutIO, 
+        #         stderr=self.stderrIO)
+        print("ret: " + str(self.returncode))
+        self.p = subprocess.Popen(self.cmd)#, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        self.p.wait()
+        self.savereturn()
+        print("ret: " + str(self.returncode))
+
+
 class Command:
 
     """Runs a command, only works on Unix.
@@ -231,8 +290,12 @@ def is_time_exceeded(sys_args, cmd):
     run time specified in command arguments. Else `False  is returned."""
     cmd_time = int(cmd.run_time)
 
+    t_val = parse_time_to_secs(sys_args.time)
+    return cmd_time > t_val
+
+def parse_time_to_secs(arg_time):
     #Parse sys_args.time
-    max_time = sys_args.time
+    max_time = arg_time
     sp = re.match("(\d+)([hms])", max_time).groups()
     t_val, t_unit = int(sp[0]), sp[1]
 
@@ -242,7 +305,8 @@ def is_time_exceeded(sys_args, cmd):
     elif t_unit == 'm':
         t_val = t_val * 60
 
-    return cmd_time > t_val
+    return t_val
+
 
 
 def trim_if_needed(txt, max_length=10000):
@@ -257,6 +321,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-c', '--cmd', help='Run a command. Could be `cronwrap -c "ls -la"`.')
     parser.add_argument('-f', '--fromaddr', help='Specify sender address for your emails. Must match your local smtp setup.')
+
 
     parser.add_argument('-e', '--emails',
                         help='Email following users if the command crashes or exceeds timeout. '
@@ -274,5 +339,7 @@ if __name__ == '__main__':
     parser.add_argument('-v', '--verbose',
                         nargs='?', default=False,
                         help='Will send an email / print to stdout on successful run.')
+
+    parser.add_argument('-n', '--enforcetime', nargs='?', default=False, help='Terminate process after timeout is exceeded.')
 
     handle_args(parser.parse_args())
