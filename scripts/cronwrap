@@ -47,6 +47,10 @@ def handle_args(sys_args):
     if sys_args.verbose is not False:
         sys_args.verbose = True
 
+    if sys_args.from:
+        from_addr = sys.args.from
+
+
     if sys_args.cmd:
         cmd = Command(sys_args.cmd)
         if cmd.returncode != 0:
@@ -198,7 +202,15 @@ def send_email(sys_args, emails, subject, message):
 
     try:
         for email in emails:
-            cmd = Command('mail -s "%s" %s < %s' %
+            if sys.args.from:
+                cmd = Command('mail -s "%s" -a "From: %s" %s < %s' %
+                          (subject.replace('"', "'"),
+                            sys.args.from,
+                           email,
+                           err_report)
+                          )
+            else:
+                cmd = Command('mail -s "%s" %s < %s' %
                           (subject.replace('"', "'"),
                            email,
                            err_report)
@@ -244,6 +256,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="A cron job wrapper that wraps jobs and enables better error reporting and command timeouts. Version %s" % __VERSION__)
 
     parser.add_argument('-c', '--cmd', help='Run a command. Could be `cronwrap -c "ls -la"`.')
+    parser.add_argument('-f', '--from', help='Specify sender address for your emails. Must match your local smtp setup.')
 
     parser.add_argument('-e', '--emails',
                         help='Email following users if the command crashes or exceeds timeout. '
