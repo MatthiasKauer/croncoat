@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
     cronwrap
@@ -38,8 +38,10 @@ import platform
 from datetime import datetime, timedelta
 
 import threading
+import signal
 import subprocess
-import StringIO
+import subprocess as sp
+#  import StringIO
 
 #--- Handlers ----------------------------------------------
 def handle_args(sys_args):
@@ -54,9 +56,11 @@ def handle_args(sys_args):
         sys_args.enforcetime = True
 
     if sys_args.cmd:
-        print "enforcetime " + str(sys_args.enforcetime)
+        print( "enforcetime " + str(sys_args.enforcetime))
         if sys_args.enforcetime:
-            cmd = ExpiringCommand( sys_args.cmd, sys_args.time)
+            #  cmd = ExpiringCommandBuiltin( sys_args.cmd, sys_args.time)
+            cmd = ExpiringCommandSignal( sys_args.cmd, sys_args.time)
+            #  cmd = ExpiringCommandThread( sys_args.cmd, sys_args.time)
             cmd.Run()
 
         else:
@@ -88,7 +92,7 @@ def handle_success(sys_args, cmd):
                        % platform.node().capitalize(),
                        out_str)
         else:
-            print out_str
+            print(out_str)
 
 
 def handle_timeout(sys_args, cmd):
@@ -106,7 +110,7 @@ def handle_timeout(sys_args, cmd):
                    % platform.node().capitalize(),
                    err_str)
     else:
-        print err_str
+        print(err_str)
 
 
 def handle_error(sys_args, cmd):
@@ -124,7 +128,7 @@ def handle_error(sys_args, cmd):
                    % platform.node().capitalize(),
                    err_str)
     else:
-        print err_str
+        print(err_str)
 
     sys.exit(-1)
 
@@ -172,40 +176,149 @@ def handle_test_email(sys_args):
 
 
 #--- Util ----------------------------------------------
-class ExpiringCommand(threading.Thread): #allow for killing after timeout
+class ExpiringCommandBuiltin(object):
+#needs python 3.3 or newer
+#works as expected, but doesn't save stdout/err if terminated early
+
+    def __init__(self, command, timeout):
+        self.cmd = command.split()
+        self.timeout = parse_time_to_secs(timeout)
+        self.start_time = time.time()
+
+    def Run(self):
+        print("cmd: ", self.cmd)
+        self.p = subprocess.Popen(self.cmd, shell=False, stdout = subprocess.PIPE, stderr=subprocess.PIPE,
+                universal_newlines=True)
+        outdata = ('aasdf', 'dfgdf')
+        try:
+            #see: https://docs.python.org/3/library/subprocess.html#subprocess.Popen.communicate
+            outdata = self.p.communicate(timeout=self.timeout)
+        except:
+            self.p.terminate()
+            outdata = self.p.communicate()
+            print("communicate timed out")
+        finally:
+            self.stdout = outdata[0]
+            self.stderr = outdata[1]
+            self.returncode = self.p.returncode
+            self.run_time = time.time() - self.start_time
+        #  self.p.wait(self.timeout)
+    
+    
+class Alarm(Exception):
+    pass
+
+def alarm_handler(signum, frame):
+    raise Alarm
+
+class ExpiringCommandSignal(object):
+    #http://stackoverflow.com/questions/1191374/subprocess-with-timeout
+
+    def savereturn(self):
+        self.run_time = time.time() - self.start_time
+        self.returncode = self.p.returncode;
+        #  self.stderr = self.p.stderr.read()
+        #  self.stdout = self.p.stdout.read()
+        #  (self.stdout, self.stderr) = self.p.communicate()
+        #  self.stdout = ""
+
+        #  self.stderr = "asdf"
+        #  self.stdout = self.p.stdout.read()
+        #  with open(self.outfile) as fout:
+        #  with open(self.outfile) as fout, open(self.errfile) as ferr:
+        #      self.stdout = fout.read()
+        #      self.stderr = ferr.read()
+        #      print("ExpSignal; stdout: %s %s" % (self.stdout, self.stderr))
+
+    def __init__(self, command, timeout):
+        self.cmd = command.split()
+        self.timeout = parse_time_to_secs(timeout)
+        self.start_time = time.time()
+
+        self.outfile = 'stdout.txt'
+        self.errfile = 'stderr.txt'
+
+        #  self.p = subprocess.Popen(self.cmd,stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+
+    def Run(self):
+        print("cmd: ", self.cmd)
+        self.p = subprocess.Popen(self.cmd,stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False,
+                universal_newlines=True)
+        #  with open(self.outfile, 'w') as fout, open(self.errfile, 'w') as ferr:
+            #  self.p = subprocess.Popen(self.cmd,stderr=ferr, stdout=fout, shell=False)
+
+        signal.signal(signal.SIGALRM, alarm_handler)
+        signal.alarm(self.timeout)
+
+        self.stderr = "Can't capture output if terminated early (sorry, but I just spent 4h trying to get this)\n"
+        self.stderr += "Best option at this points seems to be the queue implementation here: \n"
+        self.stderr += "http://stackoverflow.com/questions/375427/non-blocking-read-on-a-subprocess-pipe-in-python\n"
+        self.stdout = self.stderr
+
+        try:
+            self.p.wait()
+            self.returncode = self.p.returncode
+            self.stderr = self.p.stderr.read()
+            self.stdout = self.p.stdout.read()
+        except Alarm:
+            print("cmd %s timed out; killing now" % (self.cmd))
+            self.p.terminate()
+
+            #this didn't work
+            #  self.stdout = []
+            #  self.stderr = []
+            #  for line in self.p.stdout:
+            #      self.stdout.append(line)
+            #  for line in self.p.stderr:
+            #      self.stderr.append(line)
+
+
+            #  self.returncode = -1
+        finally:
+            #  if not self.stdout:
+            #      self.stdout = self.p.stdout.read()
+            #  if not self.stderr:
+            #      self.stderr = self.p.stderr.read()
+            self.savereturn()
+
+    
+class ExpiringCommandThread(threading.Thread): #allow for killing after timeout
     #see: http://stackoverflow.com/questions/4158502/python-kill-or-terminate-subprocess-when-timeout
 
     def __init__(self, command, timeout):
         threading.Thread.__init__(self)
-        self.cmd = command
+        self.cmd = command.split()
         self.timeout = parse_time_to_secs(timeout)
         self.run_time = -1
 
-        self.stdoutIO = StringIO.StringIO()
-        self.stderrIO = StringIO.StringIO()
+        self.outfile = 'stdout.txt'
+        self.errfile = 'stderr.txt'
         self.returncode = 0
 
     def savereturn(self):
         self.run_time = time.time() - self.start_time
         self.returncode = self.p.returncode;
-        # self.stderr = subprocess.check_output(self.p)
-        # self.stdout = subprocess.check_output(self.p)
-        # self.stderr = self.stderrIO.getvalue()
-        # self.stdout = self.stdoutIO.getvalue()
-#reading PIPE from here: http://stackoverflow.com/questions/4984428/python-subprocess-get-childrens-output-to-file-and-terminal/4985080#4985080
-#THIS WAS working but blocked:
-        # self.stdout = self.p.stdout.read()
-        # self.stderr = self.p.stderr.read()
-        # print("stdout " + str(self.stdout))
+
+        #  with open(self.outfile) as fout, open(self.errfile) as ferr:
+        #      self.stdout = fout.read()
+        #      self.stderr = ferr.read()
+        #      print("wrote out: %s %s" % (self.stdout, self.stderr))
+        #  stdoutdata = self.p.communicate()
 
     def Run(self):
-        print "running ExpCommand now"
         self.start()
-        self.join(self.timeout)
+
+        self.stdout = ""
+        self.stderr = ''
+        t = 0
+        while(t < self.timeout):
+            t+=1
+            self.join(1)
+            self.stdout += self.p.stdout.read()
+        #  self.join(self.timeout)
 
         if self.is_alive():
-            print "HIT TIMEOUT"
-            self.savereturn()
+            #  self.savereturn()
             self.p.terminate() #or self.p.kill()
             # self.p.kill()
             self.join()
@@ -215,11 +328,14 @@ class ExpiringCommand(threading.Thread): #allow for killing after timeout
         self.start_time = time.time()
         # self.p = subprocess.Popen(self.cmd, stdout=self.stdoutIO, 
         #         stderr=self.stderrIO)
-        print("ret: " + str(self.returncode))
-        self.p = subprocess.Popen(self.cmd)#, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print("ret1: " + str(self.returncode))
+        self.p = subprocess.Popen(self.cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #  with open(self.outfile,'w') as fout, open(self.errfile, 'w') as ferr:
+            #  self.p = subprocess.Popen(self.cmd, stdout=fout, stderr=ferr, shell=True)
         self.p.wait()
+
         self.savereturn()
-        print("ret: " + str(self.returncode))
+        print("ret2: " + str(self.returncode))
 
 
 class Command:
@@ -277,10 +393,10 @@ def send_email(sys_args, emails, subject, message):
 
             if sys_args.verbose:
                 if cmd.returncode == 0:
-                    print 'Sent an email to %s' % email
+                    print('Sent an email to %s' % email)
                 else:
-                    print 'Could not send an email to %s' % email
-                    print trim_if_needed(cmd.stderr)
+                    print('Could not send an email to %s' % email)
+                    print(trim_if_needed(cmd.stderr))
     finally:
         os.remove(err_report)
 

@@ -19,7 +19,8 @@ with open('log.txt', 'a') as f:
 
 if (args.sleep):
         print "sleeping"
-        time.sleep(5)
+        for k in range(3):
+            time.sleep(1)
 
 if(args.err):
         print "raising exception"
