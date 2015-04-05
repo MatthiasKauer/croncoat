@@ -45,6 +45,15 @@ Basic example of usage::
           -v [VERBOSE], --verbose [VERBOSE]
                                 Will send an email / print to stdout on successful run.
 
+          -f [EMAILADDRESS], --fromaddr [EMAILADDRESS] 
+                                (experimental) Change the email address that cronwrap sends from.
+                                This may be necessary on your system if your smtp server doesn't allow sending 
+                                from the address that is the default.
+          -k, --kill            (experimental) By default, cronwrap only monitors how much time a command
+                                requires till completion. With this, commands are killed once the timeout is
+                                reached. Unfortunately, we can currently not capture stdout/stderr for 
+                                processes that were killed.
+
 
     ##Will send out a timeout alert to cron@my_domain.com:
     $ cronwrap -c "sleep 2" -t "1s" -e cron@my_domain.com
