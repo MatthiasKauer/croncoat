@@ -7,10 +7,15 @@ A cron job wrapper that wraps jobs and enables better error reporting and comman
 Installing
 ===========
 
-To install cronwrap simply do::
+To install cronwrap from pypi simply do::
 
     $ sudo easy_install cronwrap
     $ cronwrap -h
+
+To install bleeding-edge version from repo (which might be same)::
+
+    $ git clone <this repo>
+    $ sudo python setup.py install
 
 Notes on email sending
 ===========
