@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 """
     cronwrap
@@ -37,11 +37,6 @@ import time
 import platform
 from datetime import datetime, timedelta
 
-import threading
-import signal
-import subprocess
-import subprocess as sp
-#  import StringIO
 
 #--- Handlers ----------------------------------------------
 def handle_args(sys_args):
@@ -55,14 +50,11 @@ def handle_args(sys_args):
     if sys_args.enforcetime is not False:
         sys_args.enforcetime = True
 
-    if sys_args.cmd:
-        print( "enforcetime " + str(sys_args.enforcetime))
-        if sys_args.enforcetime:
-            #  cmd = ExpiringCommandBuiltin( sys_args.cmd, sys_args.time)
-            cmd = ExpiringCommandSignal( sys_args.cmd, sys_args.time)
-            #  cmd = ExpiringCommandThread( sys_args.cmd, sys_args.time)
-            cmd.Run()
 
+    if sys_args.cmd:
+        if sys_args.enforcetime:
+            cmd = ExpiringCommandSignal( sys_args.cmd, sys_args.time)
+            cmd.Run()
         else:
             cmd = Command(sys_args.cmd)
 
@@ -92,7 +84,7 @@ def handle_success(sys_args, cmd):
                        % platform.node().capitalize(),
                        out_str)
         else:
-            print(out_str)
+            print out_str
 
 
 def handle_timeout(sys_args, cmd):
@@ -110,7 +102,7 @@ def handle_timeout(sys_args, cmd):
                    % platform.node().capitalize(),
                    err_str)
     else:
-        print(err_str)
+        print err_str
 
 
 def handle_error(sys_args, cmd):
@@ -128,7 +120,7 @@ def handle_error(sys_args, cmd):
                    % platform.node().capitalize(),
                    err_str)
     else:
-        print(err_str)
+        print err_str
 
     sys.exit(-1)
 
@@ -176,35 +168,6 @@ def handle_test_email(sys_args):
 
 
 #--- Util ----------------------------------------------
-class ExpiringCommandBuiltin(object):
-#needs python 3.3 or newer
-#works as expected, but doesn't save stdout/err if terminated early
-
-    def __init__(self, command, timeout):
-        self.cmd = command.split()
-        self.timeout = parse_time_to_secs(timeout)
-        self.start_time = time.time()
-
-    def Run(self):
-        print("cmd: ", self.cmd)
-        self.p = subprocess.Popen(self.cmd, shell=False, stdout = subprocess.PIPE, stderr=subprocess.PIPE,
-                universal_newlines=True)
-        outdata = ('aasdf', 'dfgdf')
-        try:
-            #see: https://docs.python.org/3/library/subprocess.html#subprocess.Popen.communicate
-            outdata = self.p.communicate(timeout=self.timeout)
-        except:
-            self.p.terminate()
-            outdata = self.p.communicate()
-            print("communicate timed out")
-        finally:
-            self.stdout = outdata[0]
-            self.stderr = outdata[1]
-            self.returncode = self.p.returncode
-            self.run_time = time.time() - self.start_time
-        #  self.p.wait(self.timeout)
-    
-    
 class Alarm(Exception):
     pass
 
@@ -213,7 +176,7 @@ def alarm_handler(signum, frame):
 
 class ExpiringCommandSignal(object):
     #http://stackoverflow.com/questions/1191374/subprocess-with-timeout
-
+    
     def savereturn(self):
         self.run_time = time.time() - self.start_time
         self.returncode = self.p.returncode;
@@ -281,63 +244,6 @@ class ExpiringCommandSignal(object):
             #      self.stderr = self.p.stderr.read()
             self.savereturn()
 
-    
-class ExpiringCommandThread(threading.Thread): #allow for killing after timeout
-    #see: http://stackoverflow.com/questions/4158502/python-kill-or-terminate-subprocess-when-timeout
-
-    def __init__(self, command, timeout):
-        threading.Thread.__init__(self)
-        self.cmd = command.split()
-        self.timeout = parse_time_to_secs(timeout)
-        self.run_time = -1
-
-        self.outfile = 'stdout.txt'
-        self.errfile = 'stderr.txt'
-        self.returncode = 0
-
-    def savereturn(self):
-        self.run_time = time.time() - self.start_time
-        self.returncode = self.p.returncode;
-
-        #  with open(self.outfile) as fout, open(self.errfile) as ferr:
-        #      self.stdout = fout.read()
-        #      self.stderr = ferr.read()
-        #      print("wrote out: %s %s" % (self.stdout, self.stderr))
-        #  stdoutdata = self.p.communicate()
-
-    def Run(self):
-        self.start()
-
-        self.stdout = ""
-        self.stderr = ''
-        t = 0
-        while(t < self.timeout):
-            t+=1
-            self.join(1)
-            self.stdout += self.p.stdout.read()
-        #  self.join(self.timeout)
-
-        if self.is_alive():
-            #  self.savereturn()
-            self.p.terminate() #or self.p.kill()
-            # self.p.kill()
-            self.join()
-            self.returncode = 1;
-
-    def run(self):
-        self.start_time = time.time()
-        # self.p = subprocess.Popen(self.cmd, stdout=self.stdoutIO, 
-        #         stderr=self.stderrIO)
-        print("ret1: " + str(self.returncode))
-        self.p = subprocess.Popen(self.cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #  with open(self.outfile,'w') as fout, open(self.errfile, 'w') as ferr:
-            #  self.p = subprocess.Popen(self.cmd, stdout=fout, stderr=ferr, shell=True)
-        self.p.wait()
-
-        self.savereturn()
-        print("ret2: " + str(self.returncode))
-
-
 class Command:
 
     """Runs a command, only works on Unix.
@@ -393,10 +299,10 @@ def send_email(sys_args, emails, subject, message):
 
             if sys_args.verbose:
                 if cmd.returncode == 0:
-                    print('Sent an email to %s' % email)
+                    print 'Sent an email to %s' % email
                 else:
-                    print('Could not send an email to %s' % email)
-                    print(trim_if_needed(cmd.stderr))
+                    print 'Could not send an email to %s' % email
+                    print trim_if_needed(cmd.stderr)
     finally:
         os.remove(err_report)
 
@@ -437,7 +343,6 @@ if __name__ == '__main__':
 
     parser.add_argument('-c', '--cmd', help='Run a command. Could be `cronwrap -c "ls -la"`.')
     parser.add_argument('-f', '--fromaddr', help='Specify sender address for your emails. Must match your local smtp setup.')
-
 
     parser.add_argument('-e', '--emails',
                         help='Email following users if the command crashes or exceeds timeout. '
