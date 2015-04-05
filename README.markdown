@@ -66,3 +66,6 @@ Basic example of usage::
 
     #Will send a successful report to cron@my_domain.com:
     $ cronwrap -c "ls" -e cron@my_domain.com -v
+
+    #(experimental): Kills process if it takes longer than 2 seconds and sends email from a@b.de to f@b.de
+    $ cronwrap -c "sleep 10" -t 2s -k -e f@b.de -f a@b.de

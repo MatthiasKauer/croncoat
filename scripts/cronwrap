@@ -36,6 +36,8 @@ import tempfile
 import time
 import platform
 from datetime import datetime, timedelta
+import subprocess
+import signal
 
 
 #--- Handlers ----------------------------------------------
@@ -47,12 +49,12 @@ def handle_args(sys_args):
     if sys_args.verbose is not False:
         sys_args.verbose = True
 
-    if sys_args.enforcetime is not False:
-        sys_args.enforcetime = True
+    if sys_args.kill is not False:
+        sys_args.kill = True
 
 
     if sys_args.cmd:
-        if sys_args.enforcetime:
+        if sys_args.kill:
             cmd = ExpiringCommandSignal( sys_args.cmd, sys_args.time)
             cmd.Run()
         else:
@@ -361,6 +363,6 @@ if __name__ == '__main__':
                         nargs='?', default=False,
                         help='Will send an email / print to stdout on successful run.')
 
-    parser.add_argument('-n', '--enforcetime', nargs='?', default=False, help='Terminate process after timeout is exceeded.')
+    parser.add_argument('-k', '--kill', nargs='?', default=False, help='Terminate process after timeout (as set by -t) is exceeded.')
 
     handle_args(parser.parse_args())

@@ -19,7 +19,7 @@ with open('log.txt', 'a') as f:
 
 if (args.sleep):
         print "sleeping"
-        for k in range(3):
+        for k in range(10):
             time.sleep(1)
 
 if(args.err):
