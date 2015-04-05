@@ -12,6 +12,9 @@ To install cronwrap simply do::
     $ sudo easy_install cronwrap
     $ cronwrap -h
 
+Notes on email sending
+===========
+Your system must have a configured smtp server to send emails. For minimal configurations, I suggest configuring ssmtp with an external email account of yours. Check the configuration for [gmail on arch](https://wiki.archlinux.org/index.php/SSMTP).
 
 Example
 ===========
