@@ -206,7 +206,7 @@ class ExpiringCommandSignal(object):
         #  self.p = subprocess.Popen(self.cmd,stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 
     def Run(self):
-        print("cmd: ", self.cmd)
+        #  print("cmd: ", self.cmd)
         self.p = subprocess.Popen(self.cmd,stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False,
                 universal_newlines=True)
         #  with open(self.outfile, 'w') as fout, open(self.errfile, 'w') as ferr:
@@ -226,7 +226,7 @@ class ExpiringCommandSignal(object):
             self.stderr = self.p.stderr.read()
             self.stdout = self.p.stdout.read()
         except Alarm:
-            print("cmd %s timed out; killing now" % (self.cmd))
+            #  print("cmd %s timed out; killing now" % (self.cmd))
             self.p.terminate()
 
             #this didn't work
