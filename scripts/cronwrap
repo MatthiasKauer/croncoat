@@ -38,7 +38,7 @@ import platform
 from datetime import datetime, timedelta
 import subprocess
 import signal
-
+from smtplib import SMTP_SSL
 
 #--- Handlers ----------------------------------------------
 def handle_args(sys_args):
@@ -279,34 +279,50 @@ def send_email(sys_args, emails, subject, message):
     emails = emails.split(',')
 
     err_report = tempfile.mktemp()
-    fp_err_report = open(err_report, "w")
-    fp_err_report.write(message)
-    fp_err_report.close()
 
-    try:
-        for email in emails:
-            if sys_args.fromaddr:
-                cmd = Command('mail -s "%s" -a "From: %s" %s < %s' %
-                          (subject.replace('"', "'"),
-                            sys_args.fromaddr,
-                           email,
-                           err_report)
-                          )
-            else:
-                cmd = Command('mail -s "%s" %s < %s' %
-                          (subject.replace('"', "'"),
-                           email,
-                           err_report)
-                          )
+    pymail = True
+    if(pymail):
+        smtp = SMTP_SSL()
+        smtp.connect(cfg.server, 465)
+        smtp.login(cfg.user, cfg.passwd)
 
-            if sys_args.verbose:
-                if cmd.returncode == 0:
-                    print 'Sent an email to %s' % email
+        for toaddr in emails:
+            emailMsg = email.MIMEMultipart.MIMEMultipart('mixed')
+            emailMsg['To'] = toaddr
+            emailMsg['From'] = sys_args.fromaddr
+            emailMsg['Subject'] = subject.replace('"', "'")
+            emailMsg.attach(email.mime.Text.MIMEText(message, _charset='utf-8'))
+            smtp.sendmail(emailMsg['From'], emailMsg['To'], emailMsg.as_string())
+                
+    else:
+        fp_err_report = open(err_report, "w")
+        fp_err_report.write(message)
+        fp_err_report.close()
+
+        try:
+            for email in emails:
+                if sys_args.fromaddr:
+                    cmd = Command('mail -s "%s" -a "From: %s" %s < %s' %
+                              (subject.replace('"', "'"),
+                                sys_args.fromaddr,
+                               email,
+                               err_report)
+                              )
                 else:
-                    print 'Could not send an email to %s' % email
-                    print trim_if_needed(cmd.stderr)
-    finally:
-        os.remove(err_report)
+                    cmd = Command('mail -s "%s" %s < %s' %
+                              (subject.replace('"', "'"),
+                               email,
+                               err_report)
+                              )
+
+                if sys_args.verbose:
+                    if cmd.returncode == 0:
+                        print 'Sent an email to %s' % email
+                    else:
+                        print 'Could not send an email to %s' % email
+                        print trim_if_needed(cmd.stderr)
+        finally:
+            os.remove(err_report)
 
 
 def is_time_exceeded(sys_args, cmd):
