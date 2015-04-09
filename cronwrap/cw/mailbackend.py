@@ -23,11 +23,16 @@ class MailBackend(object):
         #  mailpass = self.cfg['Mail']['pass']
         #  self.fromaddr = self.cfg['Mail']['fromaddr']
         print(server, port, mailuser, mailpass, self.fromaddr)
+
+        self.loggedin = False
         
-        self.smtp.connect(server, port)
-        self.smtp.login(mailuser, mailpass)
 
     def sendmail(self, emailMsg):
+        if(not self.loggedin):
+            self.smtp.connect(server, port)
+            self.smtp.login(mailuser, mailpass)
+            self.loggedin = True
+
         self.smtp.sendmail(emailMsg['From'], emailMsg['To'], emailMsg.as_string())
 
 
