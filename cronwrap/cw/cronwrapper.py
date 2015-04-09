@@ -183,8 +183,7 @@ class CronWrapper(object):
             return txt
 
 
-    @staticmethod
-    def render_email_template(title, sys_args, cmd):
+    def render_email_template(self, title, sys_args, cmd):
         result_str = []
 
         result_str.append(title)
@@ -210,10 +209,10 @@ class CronWrapper(object):
         result_str.append('%s\n' % cmd.returncode)
 
         result_str.append('ERROR OUTPUT:')
-        result_str.append('%s\n' % trim_if_needed(cmd.stderr))
+        result_str.append('%s\n' % self.trim_if_needed(cmd.stderr))
 
         result_str.append('STANDARD OUTPUT:')
-        result_str.append('%s' % trim_if_needed(cmd.stdout))
+        result_str.append('%s' % self.trim_if_needed(cmd.stdout))
 
         return '\n'.join(result_str)
 

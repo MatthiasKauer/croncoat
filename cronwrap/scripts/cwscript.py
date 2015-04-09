@@ -31,6 +31,7 @@ __VERSION__ = '2.0'
 #  import re
 import argparse
 from cronwrap.cw.cronwrapper import CronWrapper
+#  import cronwrap.cw.cronwrapper
 #  import tempfile
 
 #--- Handlers ----------------------------------------------
@@ -63,6 +64,6 @@ def main():
     parser.add_argument('-k', '--kill', nargs='?', default=False, help='Terminate process after timeout (as set by -t) is exceeded.')
 
     #  handle_args(parser.parse_args())
-    cw = CronWrapper(parser.parse_args())
-    cw.run()
+    cwrap = CronWrapper(parser.parse_args())
+    cwrap.run()
 
