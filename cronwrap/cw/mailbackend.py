@@ -5,7 +5,7 @@ class MailBackend(object):
     def __init__(self):
         self.smtp = SMTP_SSL()
         self.cfg = ConfigParser.ConfigParser()
-        self.cfg.read([~/.cronwrap.cfg])
+        self.cfg.read(['~/.cronwrap.cfg'])
 
         server = self.cfg['Mail']['smtpserver']
         port = self.cfg['Mail']['smtpport']

@@ -10,5 +10,5 @@ try:
 except ImportError:
     sys.exit(-1)
 
-from cronwrap.scripts.cronwrap import run
-run()
+from cronwrap.scripts.cwscript import main
+main()

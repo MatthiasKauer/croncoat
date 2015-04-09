@@ -13,3 +13,5 @@ while os.path.dirname(path) != path:
         sys.path.insert(0, path)
         break
     path = os.path.dirname(path)
+
+print("cwd: ", os.getcwd())

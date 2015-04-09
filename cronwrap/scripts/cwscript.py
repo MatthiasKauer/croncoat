@@ -37,7 +37,7 @@ from cronwrap.cw.cronwrapper import CronWrapper
 
 
 #  if __name__ == '__main__':
-def run():
+def main():
     parser = argparse.ArgumentParser(description="A cron job wrapper that wraps jobs and enables better error reporting and command timeouts. Version %s" % __VERSION__)
 
     parser.add_argument('-c', '--cmd', help='Run a command. Could be `cronwrap -c "ls -la"`.')
