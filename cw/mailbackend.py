@@ -16,4 +16,13 @@ class MailBackend(object):
         self.smtp.connect(server, port)
         self.smtp.login(mailuser, mailpass)
 
+    def sendmail(self, emailMsg):
+        self.smtp.sendmail(emailMsg['From'], emailMsg['To'], emailMsg.as_string())
+
+
+    def __exit__(self):
+        print("exiting MailBackend")
+        self.smtp.quit()
+
+
 

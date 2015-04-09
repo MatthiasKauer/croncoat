@@ -26,98 +26,14 @@
     :copyright: 2010 by Plurk
     :license: BSD
 """
-__VERSION__ = '1.3'
+__VERSION__ = '2.0'
 
-import sys
-import re
-import os
+#  import re
 import argparse
-import tempfile
-import time
-import platform
-from datetime import datetime, timedelta
-import subprocess
-import signal
+from cronwrap.cw.cronwrapper import CronWrapper
+#  import tempfile
 
 #--- Handlers ----------------------------------------------
-
-def send_email(sys_args, emails, subject, message):
-    """Sends an email via `mail`."""
-    emails = emails.split(',')
-
-    err_report = tempfile.mktemp()
-
-    pymail = True
-    if(pymail):
-        
-        for toaddr in emails:
-            emailMsg = email.MIMEMultipart.MIMEMultipart('mixed')
-            emailMsg['To'] = toaddr
-            emailMsg['From'] = sys_args.fromaddr
-            emailMsg['Subject'] = subject.replace('"', "'")
-            emailMsg.attach(email.mime.Text.MIMEText(message, _charset='utf-8'))
-            smtp.sendmail(emailMsg['From'], emailMsg['To'], emailMsg.as_string())
-                
-    else:
-        fp_err_report = open(err_report, "w")
-        fp_err_report.write(message)
-        fp_err_report.close()
-
-        try:
-            for email in emails:
-                if sys_args.fromaddr:
-                    cmd = Command('mail -s "%s" -a "From: %s" %s < %s' %
-                              (subject.replace('"', "'"),
-                                sys_args.fromaddr,
-                               email,
-                               err_report)
-                              )
-                else:
-                    cmd = Command('mail -s "%s" %s < %s' %
-                              (subject.replace('"', "'"),
-                               email,
-                               err_report)
-                              )
-
-                if sys_args.verbose:
-                    if cmd.returncode == 0:
-                        print 'Sent an email to %s' % email
-                    else:
-                        print 'Could not send an email to %s' % email
-                        print trim_if_needed(cmd.stderr)
-        finally:
-            os.remove(err_report)
-
-
-def is_time_exceeded(sys_args, cmd):
-    """Returns `True` if the command's run time has exceeded the maximum
-    run time specified in command arguments. Else `False  is returned."""
-    cmd_time = int(cmd.run_time)
-
-    t_val = parse_time_to_secs(sys_args.time)
-    return cmd_time > t_val
-
-def parse_time_to_secs(arg_time):
-    #Parse sys_args.time
-    max_time = arg_time
-    sp = re.match("(\d+)([hms])", max_time).groups()
-    t_val, t_unit = int(sp[0]), sp[1]
-
-    #Convert time to seconds
-    if t_unit == 'h':
-        t_val = t_val * 60 * 60
-    elif t_unit == 'm':
-        t_val = t_val * 60
-
-    return t_val
-
-
-
-def trim_if_needed(txt, max_length=10000):
-    if len(txt) > max_length:
-        return '... START TRUNCATED...\n%s' % txt[-max_length:]
-    else:
-        return txt
 
 
 if __name__ == '__main__':
@@ -145,4 +61,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-k', '--kill', nargs='?', default=False, help='Terminate process after timeout (as set by -t) is exceeded.')
 
-    handle_args(parser.parse_args())
+    #  handle_args(parser.parse_args())
+    cw = CronWrapper(parser.parse_args())
+    cw.exec()
+

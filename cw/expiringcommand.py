@@ -1,3 +1,6 @@
+import signal
+import subprocess
+
 class Alarm(Exception):
     pass
 
