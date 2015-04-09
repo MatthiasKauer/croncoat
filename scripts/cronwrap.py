@@ -63,5 +63,5 @@ if __name__ == '__main__':
 
     #  handle_args(parser.parse_args())
     cw = CronWrapper(parser.parse_args())
-    cw.exec()
+    cw.run()
 

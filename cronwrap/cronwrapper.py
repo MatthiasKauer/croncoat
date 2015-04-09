@@ -23,7 +23,7 @@ class CronWrapper(object):
 
         self.mailer = MailBackend()
 
-    def exec(self):
+    def run(self):
         sys_args = self.sys_args
         if sys_args.cmd:
             self.cmd = ExpiringCommand( sys_args.cmd, sys_args.time)

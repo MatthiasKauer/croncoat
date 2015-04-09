@@ -12,6 +12,7 @@ class MailBackend(object):
         mailuser = self.cfg['Mail']['user']
         mailpass = self.cfg['Mail']['pass']
         self.fromaddr = self.cfg['Mail']['fromaddr']
+        print(server, port, mailuser, mailpass, self.fromaddr)
         
         self.smtp.connect(server, port)
         self.smtp.login(mailuser, mailpass)
