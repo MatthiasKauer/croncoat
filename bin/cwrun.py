@@ -1,5 +1,5 @@
 '''
-Created on 30 Jan, 2015
+Created on 08 Apr, 2015
 
 @author: matthias
 '''
@@ -10,5 +10,5 @@ try:
 except ImportError:
     sys.exit(-1)
 
-from fastsimu.scripts.minisimu import run
+from cronwrap.scripts.cronwrap import run
 run()
