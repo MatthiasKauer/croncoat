@@ -1,5 +1,7 @@
+import time
 import signal
 import subprocess
+from cronwrap.cw.helper import Helper
 
 class Alarm(Exception):
     pass
@@ -28,7 +30,7 @@ class ExpiringCommand(object):
 
     def __init__(self, command, timeout):
         self.cmd = command.split()
-        self.timeout = parse_time_to_secs(timeout)
+        self.timeout = Helper.parse_time_to_secs(timeout)
         self.start_time = time.time()
 
         self.outfile = 'stdout.txt'
