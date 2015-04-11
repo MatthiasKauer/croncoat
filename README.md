@@ -17,7 +17,7 @@ To install bleeding-edge version (WARNING: Read path issues below!) from repo (w
     $ git clone <this repo>
     $ sudo python setup.py install
 
-WARNING: On my system cronwrap wasn't in the shorter path that cron uses during execution. This is very confusing b/c everything works outside cron, but once that comes into play nothing runs anymore. You need to append a line like the following to crontab. 
+WARNING: On my system cronwrap wasn't in the shorter path that cron uses during execution. This is very confusing b/c everything works outside cron, but once that comes into play nothing runs anymore. You need to add a line like the following to crontab before the scripts you want to execute.
 
 ```
 PATH=/usr/local/bin:/usr/bin:/bin
