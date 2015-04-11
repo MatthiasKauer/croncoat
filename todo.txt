@@ -1,3 +1,5 @@
 (B) 2015-04-11 Adjust readme to new cwrap2
 (C) 2015-04-11 clean up code somewhat
 (D) 2015-04-11 Test whether this wroks with python3
+(D) 2015-04-11 Without inputs, output help text (or at least do nothing, but don't fail)
+(D) 2015-04-11 Think about naming: will I shadow anything?
