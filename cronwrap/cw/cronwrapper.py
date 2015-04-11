@@ -1,8 +1,5 @@
 import platform
-import time
-import os
 import sys
-import re
 import email
 from cronwrap.cw.expiringcommand import ExpiringCommand
 from cronwrap.cw.mailbackend import MailBackend
