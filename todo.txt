@@ -1,2 +1,3 @@
 (B) 2015-04-11 Adjust readme to new cwrap2
 (C) 2015-04-11 clean up code somewhat
+(D) 2015-04-11 Test whether this wroks with python3
