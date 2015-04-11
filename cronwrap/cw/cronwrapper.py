@@ -117,7 +117,7 @@ fromaddr=
         sys.exit(-1)
 
     def handle_test_email(self):
-        subject = 'Host %s: %s test mail'% (platform.node().capitalize(), self.scriptname),
+        subject = 'Host %s: %s test mail'% (platform.node().capitalize(), self.scriptname)
         content = 'just a test mail, yo! :)'
 
         self.send_email(subject, content)
@@ -127,7 +127,7 @@ fromaddr=
         """Sends an email via `mail`."""
         emails = self.sys_args.emails
         emails = emails.split(',')
-
+        
         for toaddr in emails:
             emailMsg = email.MIMEMultipart.MIMEMultipart('mixed')
             emailMsg['To'] = toaddr

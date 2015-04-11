@@ -45,11 +45,18 @@ def main(input_args=None):
     desc_str += "\nTo output the format, use %s --ini" % __scriptname__
     desc_str += "\nUsage examples:" 
     desc_str += """
-    %s -t 5s -c 'sleep 10s' -e test@domain.org
-    %s -c 'python -c "import sys; sys.exit(1)"'
-    %s -v -c 'ls -la'
-    %s -c 'ls -la'
-""" % ((__scriptname__,) * 4)
+    Send test email: 
+        %s -e test@domain.org
+    Send email after killing a script that takes longer than 5s
+        %s -t 5s -c 'sleep 10s' -e test@domain.org
+    Print to stdout after catching error in script; 
+    Note: this won't work with exit(1) b/c no real shell here 
+        %s -c 'python -c "import sys; sys.exit(1)"'
+    Print no output for successful command
+        %s -c 'ls -la'
+    Print output of successful command
+        %s -v -c 'ls -la'
+""" % ((__scriptname__,) * 5)
     parser = argparse.ArgumentParser(prog=__scriptname__, description=desc_str, formatter_class=argparse.RawTextHelpFormatter)
 
     parser.add_argument('-c', '--cmd', 
