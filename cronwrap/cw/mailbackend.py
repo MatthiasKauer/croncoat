@@ -9,7 +9,7 @@ class MailBackend(object):
         fname = os.path.expanduser('~/.cronwrap2.ini')
         self.cfg.read(fname)
 
-        print(self.cfg.sections())
+#         print(self.cfg.sections())
         #  print(self.cfg.options('Mail'))
         self.server = self.cfg.get('Mail', 'smtpserver')
         self.port = self.cfg.get('Mail', 'smtpport')
