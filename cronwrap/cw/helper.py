@@ -12,10 +12,11 @@ class Helper(object):
     '''
 
 
-    def __init__(self, params):
+    def __init__(self):
         '''
         Constructor
         '''
+#         self.sname = scriptname
         pass
     
     @staticmethod

@@ -27,6 +27,7 @@
     :license: BSD
 """
 __VERSION__ = '2.0'
+__scriptname__ = 'cwrap2'
 
 #  import re
 import argparse
@@ -38,20 +39,20 @@ from cronwrap.cw.cronwrapper import CronWrapper
 
 
 #  if __name__ == '__main__':
-def main():
+def main(input_args=None):
     desc_str = "A cron job wrapper that wraps jobs and enables better error reporting and command timeouts. Version %s" % __VERSION__
+    desc_str += "\nYou must create a config file ~/.%s.ini to store smtp server data (preferably readable only by you)" %__scriptname__
+    desc_str += "\nTo output the format, use %s --ini" % __scriptname__
+    desc_str += "\nUsage examples:" 
     desc_str += """
-    You must create a config file ~/.cronwrap2.ini to store smtp server data (preferably readable only by you)
-    To output the format, use cronwrap2 --ini
-Usage examples: 
-    cronwrap2 -t 5s -c 'sleep 10s' -e test@domain.org
-    cronwrap2 -c 'exit 1'
-    cronwrap2 -v -c 'ls -la'
-    cronwrap2 -c 'ls -la'
-"""
-    parser = argparse.ArgumentParser(description=desc_str, formatter_class=argparse.RawTextHelpFormatter)
+    %s -t 5s -c 'sleep 10s' -e test@domain.org
+    %s -c 'exit 1'
+    %s -v -c 'ls -la'
+    %s -c 'ls -la'
+""" % ((__scriptname__,) * 4)
+    parser = argparse.ArgumentParser(prog=__scriptname__, description=desc_str, formatter_class=argparse.RawTextHelpFormatter)
 
-    parser.add_argument('-c', '--cmd', help='Run a command. Could be `cronwrap -c "ls -la"`.')
+    parser.add_argument('-c', '--cmd', help='Run a command. Could be `%s -c "ls -la"`.' % __scriptname__)
 #     parser.add_argument('-f', '--fromaddr', help='Specify sender address for your emails. Must match your local smtp setup.')
 
     parser.add_argument('-e', '--emails',
@@ -68,8 +69,7 @@ Usage examples:
                         )
     
     parser.add_argument('--ini', nargs='?', default=False,
-                        help='Print the configuration file format. '
-                        'Can be used to initialize (overwrites!) the config file with "cronwrap2 --ini > ~/.cronwrap.ini"'
+                        help='Print the configuration file format. '  
                         )
 
     parser.add_argument('-v', '--verbose',
@@ -79,10 +79,10 @@ Usage examples:
 #     parser.add_argument('-k', '--kill', nargs='?', default=False, help='Terminate process after timeout (as set by -t) is exceeded.')
 
     #  handle_args(parser.parse_args())
-    sys_args = parser.parse_args()
+    sys_args = parser.parse_args(input_args)
     if(sys_args.ini is not False):
-        CronWrapper.print_ini()
+        CronWrapper.print_ini(__scriptname__)
     else:
-        cwrap = CronWrapper(sys_args)
+        cwrap = CronWrapper(sys_args, __scriptname__)
         cwrap.run()
 

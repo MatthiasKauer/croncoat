@@ -10,8 +10,10 @@ from cronwrap.cw.helper import Helper
 
 
 class CronWrapper(object):
-    def __init__(self, sys_args):
+    def __init__(self, sys_args, scriptname):
         """Handles comamnds that are parsed via argparse."""
+        self.scriptname = scriptname
+        
         if not sys_args.time:
             sys_args.time = '1h'
 
@@ -25,7 +27,7 @@ class CronWrapper(object):
 
         self.sys_args = sys_args
 
-        self.mailer = MailBackend()
+        self.mailer = MailBackend(scriptname)
 
     def run(self):
         sys_args = self.sys_args          
@@ -47,8 +49,9 @@ class CronWrapper(object):
             self.handle_test_email()
 
     @staticmethod
-    def print_ini():
-        example_ini = """#example format for ~/.cronwrap2.ini
+    def print_ini(scriptname):
+        example_ini = "#example format for ~/.%s.ini (don't use quotes!)" % scriptname
+        example_ini +="""
 [Mail]
 smtpserver=
 smtpport=
@@ -62,15 +65,15 @@ fromaddr=
         sys_args = self.sys_args; cmd = self.cmd
         """Called if a command did finish successfuly."""
         out_str = Helper.render_email_template(
-            'CRONWRAP RAN COMMAND SUCCESSFULLY:',
+            '%s RAN COMMAND SUCCESSFULLY:' % self.scriptname,
             sys_args,
             cmd
         )
 
         if sys_args.verbose:
             if sys_args.emails:
-                self.send_email(subject='Host %s: cronwrap ran command successfully!' %
-                           platform.node().capitalize(),
+                self.send_email(subject='Host %s: %s ran command successfully!' %
+                           (platform.node().capitalize(), self.scriptname),
                            content=out_str)
             else:
                 print out_str
@@ -81,14 +84,14 @@ fromaddr=
 
         sys_args = self.sysargs; cmd = self.cmd
         err_str = Helper.render_email_template(
-            "CRONWRAP DETECTED A TIMEOUT ON FOLLOWING COMMAND:",
+            "%s DETECTED A TIMEOUT ON FOLLOWING COMMAND:" % self.scriptname,
             sys_args,
             cmd
         )
 
         if sys_args.emails:
-            self.send_email(subject='Host %s: cronwrap detected a timeout!' %
-                       platform.node().capitalize(),
+            self.send_email(subject='Host %s: % detected a timeout!' %
+                       (platform.node().capitalize(), self.scriptname),
                        content=err_str)
         else:
             print err_str
@@ -99,14 +102,14 @@ fromaddr=
         sys_args = self.sys_args; cmd = self.cmd
 
         err_str = Helper.render_email_template(
-            "CRONWRAP DETECTED FAILURE OR ERROR OUTPUT FOR THE COMMAND:",
+            "%s DETECTED FAILURE OR ERROR OUTPUT FOR THE COMMAND:" % self.scriptname,
             sys_args,
             cmd
         )
 
         if sys_args.emails:
-            self.send_email(subject='Host %s: cronwrap detected a failure!' %
-                             platform.node().capitalize(),
+            self.send_email(subject='Host %s: %s detected a failure!' %
+                             (platform.node().capitalize(), self.scriptname),
                        content=err_str)
         else:
             print err_str
@@ -114,7 +117,7 @@ fromaddr=
         sys.exit(-1)
 
     def handle_test_email(self):
-        subject = 'Host %s: cronwrap test mail'% platform.node().capitalize()
+        subject = 'Host %s: % test mail'% (platform.node().capitalize(), self.scriptname),
         content = 'just a test mail, yo! :)'
 
         self.send_email(subject, content)

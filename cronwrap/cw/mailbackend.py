@@ -3,10 +3,10 @@ import os
 import ConfigParser
 
 class MailBackend(object):
-    def __init__(self):
+    def __init__(self, scriptname):
         self.smtp = SMTP_SSL()
         self.cfg = ConfigParser.SafeConfigParser()
-        fname = os.path.expanduser('~/.cronwrap2.ini')
+        fname = os.path.expanduser('~/.%s.ini' % scriptname)
         self.cfg.read(fname)
 
 #         print(self.cfg.sections())
@@ -29,8 +29,8 @@ class MailBackend(object):
 
     def sendmail(self, emailMsg):
         if(not self.loggedin):
-            print("Logging in to ", self.server, self.port, self.mailuser,
-                  self.mailpass, self.fromaddr)
+#             print("Logging in to ", self.server, self.port, self.mailuser,
+#                   self.mailpass, self.fromaddr)
             emailMsg['From']=self.fromaddr
             
             self.smtp.connect(self.server, self.port)
