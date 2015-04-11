@@ -46,13 +46,15 @@ def main(input_args=None):
     desc_str += "\nUsage examples:" 
     desc_str += """
     %s -t 5s -c 'sleep 10s' -e test@domain.org
-    %s -c 'exit 1'
+    %s -c 'python -c "import sys; sys.exit(1)"'
     %s -v -c 'ls -la'
     %s -c 'ls -la'
 """ % ((__scriptname__,) * 4)
     parser = argparse.ArgumentParser(prog=__scriptname__, description=desc_str, formatter_class=argparse.RawTextHelpFormatter)
 
-    parser.add_argument('-c', '--cmd', help='Run a command. Could be `%s -c "ls -la"`.' % __scriptname__)
+    parser.add_argument('-c', '--cmd', 
+                        help='Run a command. Could be `%s -c "ls -la"`. No command => test email is sent.' % __scriptname__
+                        )
 #     parser.add_argument('-f', '--fromaddr', help='Specify sender address for your emails. Must match your local smtp setup.')
 
     parser.add_argument('-e', '--emails',

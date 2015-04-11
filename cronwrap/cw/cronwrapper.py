@@ -117,7 +117,7 @@ fromaddr=
         sys.exit(-1)
 
     def handle_test_email(self):
-        subject = 'Host %s: % test mail'% (platform.node().capitalize(), self.scriptname),
+        subject = 'Host %s: %s test mail'% (platform.node().capitalize(), self.scriptname),
         content = 'just a test mail, yo! :)'
 
         self.send_email(subject, content)

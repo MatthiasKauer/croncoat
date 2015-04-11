@@ -1,6 +1,7 @@
 import time
 import signal
 import subprocess
+import shlex
 from cronwrap.cw.helper import Helper
 
 class Alarm(Exception):
@@ -29,7 +30,8 @@ class ExpiringCommand(object):
         #      print("ExpSignal; stdout: %s %s" % (self.stdout, self.stderr))
 
     def __init__(self, command, timeout):
-        self.cmd = command.split()
+#         self.cmd = command.split()
+        self.cmd = shlex.split(command)
         self.timeout = Helper.parse_time_to_secs(timeout)
         self.start_time = time.time()
 
