@@ -41,6 +41,8 @@ from cronwrap.cw.cronwrapper import CronWrapper
 def main():
     desc_str = "A cron job wrapper that wraps jobs and enables better error reporting and command timeouts. Version %s" % __VERSION__
     desc_str += """
+    You must create a config file ~/.cronwrap2.ini to store smtp server data (preferably readable only by you)
+    To output the format, use cronwrap2 --ini
 Usage examples: 
     cronwrap2 -t 5s -c 'sleep 10s' -e test@domain.org
     cronwrap2 -c 'exit 1'
@@ -55,7 +57,7 @@ Usage examples:
     parser.add_argument('-e', '--emails',
                         help='Send email to the following addresses if the command crashes or exceeds timeout. '
                         "Uses Python's email library to send emails (therefore no user names unlike original cronwrap). "
-                        "If this is not set, output email content to stdout." 
+                        "If this is not set, only output to stdout." 
                         )
 
     parser.add_argument('-t', '--time',
@@ -63,6 +65,11 @@ Usage examples:
                         'If this time is reached, the script will be killed and an alert email will be sent. '
                         "If the script is killed stdout/stderr cannot be captured at this time! "
                         "The default is 1 hour `-t 1h`. Possible values include: `-t 2h`,`-t 5m`, `-t 30s`."
+                        )
+    
+    parser.add_argument('--ini', nargs='?', default=False,
+                        help='Print the configuration file format. '
+                        'Can be used to initialize (overwrites!) the config file with "cronwrap2 --ini > ~/.cronwrap.ini"'
                         )
 
     parser.add_argument('-v', '--verbose',
@@ -72,6 +79,10 @@ Usage examples:
 #     parser.add_argument('-k', '--kill', nargs='?', default=False, help='Terminate process after timeout (as set by -t) is exceeded.')
 
     #  handle_args(parser.parse_args())
-    cwrap = CronWrapper(parser.parse_args())
-    cwrap.run()
+    sys_args = parser.parse_args()
+    if(sys_args.ini is not False):
+        CronWrapper.print_ini()
+    else:
+        cwrap = CronWrapper(sys_args)
+        cwrap.run()
 

@@ -17,7 +17,9 @@ class CronWrapper(object):
 
         if sys_args.verbose is not False:
             sys_args.verbose = True
-
+            
+#         if sys_args.ini is not False:
+#             self.sys_args = True
 #         if sys_args.kill is not False:
 #             sys_args.kill = True
 
@@ -26,7 +28,12 @@ class CronWrapper(object):
         self.mailer = MailBackend()
 
     def run(self):
-        sys_args = self.sys_args
+        sys_args = self.sys_args          
+        
+#         if sys_args.ini:
+#             self.print_ini()
+#             return 0
+        
         if sys_args.cmd:
             self.cmd = ExpiringCommand( sys_args.cmd, sys_args.time)
             self.cmd.Run()
@@ -39,6 +46,17 @@ class CronWrapper(object):
         elif sys_args.emails:
             self.handle_test_email()
 
+    @staticmethod
+    def print_ini():
+        example_ini = """#example format for ~/.cronwrap2.ini
+[Mail]
+smtpserver=
+smtpport=
+user=
+pass=
+fromaddr=
+"""
+        print(example_ini)
 
     def handle_success(self):
         sys_args = self.sys_args; cmd = self.cmd

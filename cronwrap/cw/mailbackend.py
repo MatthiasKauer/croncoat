@@ -6,7 +6,7 @@ class MailBackend(object):
     def __init__(self):
         self.smtp = SMTP_SSL()
         self.cfg = ConfigParser.SafeConfigParser()
-        fname = os.path.expanduser('~/.cronwrap.ini')
+        fname = os.path.expanduser('~/.cronwrap2.ini')
         self.cfg.read(fname)
 
         print(self.cfg.sections())
