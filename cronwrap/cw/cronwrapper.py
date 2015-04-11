@@ -18,8 +18,8 @@ class CronWrapper(object):
         if sys_args.verbose is not False:
             sys_args.verbose = True
 
-        if sys_args.kill is not False:
-            sys_args.kill = True
+#         if sys_args.kill is not False:
+#             sys_args.kill = True
 
         self.sys_args = sys_args
 
