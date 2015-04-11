@@ -6,7 +6,7 @@
 # your option) any later version.
 
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='cwrap2',
       version = '2.0',
@@ -25,7 +25,8 @@ setup(name='cwrap2',
       install_requires=[
           'argparse>=1.1'
       ],
-      packages = ['cronwrap/cw', 'cronwrap/scripts'],
+      #  packages = ['cronwrap/cw', 'cronwrap/scripts'],
+      packages = find_packages(),
 
       #  scripts=['cronwrap/scripts/cwscript.py'],
       entry_points={'console_scripts': ['cwrap2=cronwrap.scripts.cwscript:main']}
