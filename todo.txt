@@ -1,5 +1,5 @@
 (B) 2015-04-11 Adjust readme to new cwrap2
-(B) 2015-04-11 somet bullshit task
+x (B) 2015-04-11 somet bullshit task
 (C) 2015-04-11 clean up code somewhat
 (C) 2015-04-11 add command (trimmed) to subject line for better recognizability
 (D) 2015-04-11 Test whether this wroks with python3
