@@ -109,7 +109,7 @@ fromaddr=
         sys.exit(-1)
 
     def handle_test_email(self):
-        subject='%s (%s - %s): Testing' %
+        subject='%s (%s - %s): Testing' % \
                    (self.scriptname, platform.node().capitalize(), Helper.trim_if_needed("test email", max_length=20)),
         # subject = 'Host %s: %s test mail'% (platform.node().capitalize(), self.scriptname)
         content = 'just a test mail, yo! :)'
