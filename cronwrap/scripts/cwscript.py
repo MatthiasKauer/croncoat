@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-    cronwrap
+    croncoat
     ~~~~~~~~~~~~~~
 
     A cron job wrapper that wraps jobs and enables better error reporting and command timeouts.
@@ -9,31 +9,29 @@
     Example of usage::
 
         #Will print out help
-        $ cronwrap -h
+        $ croncoat -h
 
         #Will send out a timeout alert to cron@my_domain.com:
-        $ cronwrap -c "sleep 2" -t "1s" -e cron@my_domain.com
+        $ croncoat -c "sleep 2" -t "1s" -e cron@my_domain.com
 
         #Will send out an error alert to cron@my_domain.com:
-        $ cronwrap -c "blah" -t "1s" -e cron@my_domain.com
+        $ croncoat -c "blah" -t "1s" -e cron@my_domain.com
 
         #Will not send any reports:
-        $ cronwrap -c "ls" -e cron@my_domain.com
+        $ croncoat -c "ls" -e cron@my_domain.com
 
         #Will send a successful report to cron@my_domain.com:
-        $ cronwrap -c "ls" -e cron@my_domain.com -v
+        $ croncoat -c "ls" -e cron@my_domain.com -v
 
     :copyright: 2010 by Plurk
     :license: BSD
 """
 __VERSION__ = '2.0'
-__scriptname__ = 'cwrap2'
+__scriptname__ = 'croncoat'
 
 #  import re
 import argparse
 from cronwrap.cw.cronwrapper import CronWrapper
-#  import cronwrap.cw.cronwrapper
-#  import tempfile
 
 #--- Handlers ----------------------------------------------
 

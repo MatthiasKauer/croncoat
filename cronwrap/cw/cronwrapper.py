@@ -28,11 +28,6 @@ class CronWrapper(object):
 
     def run(self):
         sys_args = self.sys_args          
-        
-#         if sys_args.ini:
-#             self.print_ini()
-#             return 0
-        
         if sys_args.cmd:
             self.cmd = ExpiringCommand( sys_args.cmd, sys_args.time)
             self.cmd.Run()
@@ -69,8 +64,8 @@ fromaddr=
 
         if sys_args.verbose:
             if sys_args.emails:
-                self.send_email(subject='Host %s: %s ran command successfully!' %
-                           (platform.node().capitalize(), self.scriptname),
+                self.send_email(subject='%s (%s - %s): successful execution!' %
+                       (self.scriptname, platform.node().capitalize(), Helper.trim_if_needed(cmd, max_length=20)),
                            content=out_str)
             else:
                 print out_str
@@ -87,8 +82,8 @@ fromaddr=
         )
 
         if sys_args.emails:
-            self.send_email(subject='Host %s: % detected a timeout!' %
-                       (platform.node().capitalize(), self.scriptname),
+            self.send_email(subject='%s (%s - %s): timeout detected!' %
+                       (self.scriptname, platform.node().capitalize(), Helper.trim_if_needed(cmd, max_length=20)),
                        content=err_str)
         else:
             print err_str
@@ -105,8 +100,8 @@ fromaddr=
         )
 
         if sys_args.emails:
-            self.send_email(subject='Host %s: %s detected a failure!' %
-                             (platform.node().capitalize(), self.scriptname),
+            self.send_email(subject='%s (%s - %s): failure detected!' %
+                       (self.scriptname, platform.node().capitalize(), Helper.trim_if_needed(cmd, max_length=20)),
                        content=err_str)
         else:
             print err_str
@@ -114,7 +109,9 @@ fromaddr=
         sys.exit(-1)
 
     def handle_test_email(self):
-        subject = 'Host %s: %s test mail'% (platform.node().capitalize(), self.scriptname)
+        subject='%s (%s - %s): Testing' %
+                   (self.scriptname, platform.node().capitalize(), Helper.trim_if_needed("test email", max_length=20)),
+        # subject = 'Host %s: %s test mail'% (platform.node().capitalize(), self.scriptname)
         content = 'just a test mail, yo! :)'
 
         self.send_email(subject, content)
