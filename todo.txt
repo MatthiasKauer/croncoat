@@ -1,6 +1,7 @@
 (B) 2015-04-11 Adjust readme to new cwrap2
 (C) 2015-04-11 clean up code somewhat
 (C) 2015-04-11 add command (trimmed) to subject line for better recognizability
-(D) 2015-04-11 Test whether this wroks with python3
+(D) 2015-04-27 try getting crashed output after all (file.seek might be answer) {{http://stackoverflow.com/questions/1191374/subprocess-with-timeout}} {{http://stackoverflow.com/questions/4417962/stop-reading-process-output-in-python-without-hang}}
 (D) 2015-04-11 Without inputs, output help text (or at least do nothing, but don't fail)
-(D) 2015-04-11 Think about naming: will I shadow anything?
+a (D) 2015-04-11 Test whether this wroks with python3
+x (D) 2015-04-11 Think about naming: will I shadow anything? [croncoat looks very safe]
