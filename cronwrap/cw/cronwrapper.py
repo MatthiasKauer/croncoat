@@ -10,6 +10,7 @@ class CronWrapper(object):
     def __init__(self, sys_args, scriptname):
         """Handles comamnds that are parsed via argparse."""
         self.scriptname = scriptname
+        self.subjectname = "cc"
         
         if not sys_args.time:
             sys_args.time = '1h'
@@ -64,12 +65,25 @@ fromaddr=
 
         if sys_args.verbose:
             if sys_args.emails:
-                self.send_email(subject='%s (%s - %s): successful execution!' %
-                       (self.scriptname, platform.node().capitalize(), Helper.trim_if_needed(cmd, max_length=20)),
+                self.send_email(subject='%s (%s): successful execution! [%s]' %
+                       ( 
+			 Helper.trim_if_needed(sys_args.cmd, max_length=20),
+			platform.node().capitalize(),
+			self.scriptname,
+			),
                            content=out_str)
             else:
                 print out_str
 
+    def handle_general(self, subj_str, content_str):
+	self.send_email(subject='%s (%s): %s [%s]' %
+	       ( 
+			Helper.trim_if_needed(sys_args.cmd, max_length=20),
+			platform.node().capitalize(),
+			subj_str,
+			self.scriptname,
+		), 
+                content=err_str)
 
     def handle_timeout(self):
         """Called if a command exceeds its running time."""
@@ -82,8 +96,14 @@ fromaddr=
         )
 
         if sys_args.emails:
+		self.send_email(subject='%s (%s): successful execution! [%s]' %
+		       ( 
+			 Helper.trim_if_needed(sys_args.cmd, max_length=20),
+			platform.node().capitalize(),
+			self.scriptname,
+			),
             self.send_email(subject='%s (%s - %s): timeout detected!' %
-                       (self.scriptname, platform.node().capitalize(), Helper.trim_if_needed(cmd, max_length=20)),
+                       (self.subjectname, platform.node().capitalize(), Helper.trim_if_needed(sys_args.cmd, max_length=20)),
                        content=err_str)
         else:
             print err_str
@@ -101,7 +121,7 @@ fromaddr=
 
         if sys_args.emails:
             self.send_email(subject='%s (%s - %s): failure detected!' %
-                       (self.scriptname, platform.node().capitalize(), Helper.trim_if_needed(cmd, max_length=20)),
+                       (self.subjectname, platform.node().capitalize(), Helper.trim_if_needed(sys_args.cmd, max_length=20)),
                        content=err_str)
         else:
             print err_str
@@ -110,7 +130,7 @@ fromaddr=
 
     def handle_test_email(self):
         subject='%s (%s - %s): Testing' % \
-                   (self.scriptname, platform.node().capitalize(), Helper.trim_if_needed("test email", max_length=20)),
+                   (self.subjectname, platform.node().capitalize(), Helper.trim_if_needed("test email", max_length=20)),
         # subject = 'Host %s: %s test mail'% (platform.node().capitalize(), self.scriptname)
         content = 'just a test mail, yo! :)'
 
