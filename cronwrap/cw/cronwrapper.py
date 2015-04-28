@@ -18,11 +18,6 @@ class CronWrapper(object):
         if sys_args.verbose is not False:
             sys_args.verbose = True
 
-#         if sys_args.ini is not False:
-#             self.sys_args = True
-#         if sys_args.kill is not False:
-#             sys_args.kill = True
-
         self.sys_args = sys_args
 
         self.mailer = MailBackend(scriptname)
@@ -57,33 +52,28 @@ fromaddr=
     def handle_success(self):
         sys_args = self.sys_args; cmd = self.cmd
         """Called if a command did finish successfuly."""
-        out_str = Helper.render_email_template(
-                '%s RAN COMMAND SUCCESSFULLY:' % self.scriptname,
-                sys_args,
-                cmd
-                )
+        out_str = Helper.render_email_template('%s RAN COMMAND SUCCESSFULLY:' % \
+                self.scriptname, sys_args, cmd)
+        subj_str='%s (%s): successful execution! [%s]' % \
+                        (Helper.trim_if_needed(sys_args.cmd, max_length=20),
+                            platform.node().capitalize(), self.scriptname)
 
         if sys_args.verbose:
-            if sys_args.emails:
-                self.send_email(subject='%s (%s): successful execution! [%s]' %
-                        ( 
-                            Helper.trim_if_needed(sys_args.cmd, max_length=20),
-                            platform.node().capitalize(),
-                            self.scriptname,
-                            ),
-                        content=out_str)
-            else:
-                print out_str
+            self.handle_general(subj_elem=subj_elem, content_elem=content_elem);
 
-    def handle_general(self, subj_str, content_str):
-        self.send_email(subject='%s (%s): %s [%s]' %
-                ( 
-                    Helper.trim_if_needed(sys_args.cmd, max_length=20),
-                    platform.node().capitalize(),
-                    subj_str,
-                    self.scriptname,
-                    ), 
-                content=err_str)
+    def handle_general(self, subj_elem, content_elem):
+        sys_args = self.sys_args; cmd = self.cmd
+        out_str = Helper.render_email_template('%s %s:' % \
+                self.scriptname, content_elem, sys_args, cmd)
+        subj_str='%s (%s): %s [%s]' % \
+                        (Helper.trim_if_needed(sys_args.cmd, max_length=20),
+                            subj_elem, platform.node().capitalize(), self.scriptname)
+        self.send_email(subject=subj_str, content=err_str)
+
+        if sys_args.emails:
+            self.handle_general(subj_str=subj_str, content_str=out_str);
+        else:
+            print out_str
 
     def handle_timeout(self):
         """Called if a command exceeds its running time."""
