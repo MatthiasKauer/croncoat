@@ -52,11 +52,8 @@ fromaddr=
     def handle_success(self):
         sys_args = self.sys_args; cmd = self.cmd
         """Called if a command did finish successfuly."""
-        out_str = Helper.render_email_template('%s RAN COMMAND SUCCESSFULLY:' % \
-                self.scriptname, sys_args, cmd)
-        subj_str='%s (%s): successful execution! [%s]' % \
-                        (Helper.trim_if_needed(sys_args.cmd, max_length=20),
-                            platform.node().capitalize(), self.scriptname)
+        content_elem = 'RAN COMMAND SUCCESSFULLY:' 
+        subj_elem='successful execution!'
 
         if sys_args.verbose:
             self.handle_general(subj_elem=subj_elem, content_elem=content_elem);
@@ -64,14 +61,14 @@ fromaddr=
     def handle_general(self, subj_elem, content_elem):
         sys_args = self.sys_args; cmd = self.cmd
         out_str = Helper.render_email_template('%s %s:' % \
-                self.scriptname, content_elem, sys_args, cmd)
+                (self.scriptname, content_elem), sys_args, cmd)
         subj_str='%s (%s): %s [%s]' % \
                         (Helper.trim_if_needed(sys_args.cmd, max_length=20),
                             subj_elem, platform.node().capitalize(), self.scriptname)
-        self.send_email(subject=subj_str, content=err_str)
 
         if sys_args.emails:
-            self.handle_general(subj_str=subj_str, content_str=out_str);
+            self.send_email(subject=subj_str, content=out_str)
+            #  self.handle_general(subj_str=subj_str, content_str=out_str);
         else:
             print out_str
 

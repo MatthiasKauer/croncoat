@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
         with self.assertRaises(SystemExit):
             main(input_args)
 
-    def test_ls(self):
+    def test_success(self):
         input_args = ['-c', 'ls -la']
         main(input_args)
         
