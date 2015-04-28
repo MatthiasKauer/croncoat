@@ -8,8 +8,8 @@
 import os
 from setuptools import setup, find_packages
 
-setup(name='cwrap2',
-      version = '2.0',
+setup(name='croncoat',
+      version = '0.1',
       #  author="amix the lucky stiff",
       #  author_email="amix@amix.dk",
       #  url="http://www.amix.dk/",
@@ -29,7 +29,7 @@ setup(name='cwrap2',
       packages = find_packages(),
 
       #  scripts=['cronwrap/scripts/cwscript.py'],
-      entry_points={'console_scripts': ['cwrap2=cronwrap.scripts.cwscript:main']}
+      entry_points={'console_scripts': ['croncoat=cronwrap.scripts.cwscript:main']}
       )
       
 #        packages=[''],

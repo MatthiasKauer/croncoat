@@ -26,7 +26,7 @@
     :copyright: 2010 by Plurk
     :license: BSD
 """
-__VERSION__ = '2.0'
+__VERSION__ = '0.1'
 __scriptname__ = 'croncoat'
 
 #  import re
