@@ -4,6 +4,10 @@ test push
 
 A cron job wrapper that wraps jobs and enables better error reporting and command timeouts.
 
+Known Issues
+===========
+
+* Choosing small times (e.g. -t 3s) won't work b/c the alarm signal will trigger while the smtp server is still being contacted.
 
 Installing
 ===========
