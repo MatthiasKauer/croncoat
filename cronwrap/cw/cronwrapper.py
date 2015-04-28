@@ -88,29 +88,24 @@ fromaddr=
     def handle_timeout(self):
         """Called if a command exceeds its running time."""
 
-    sys_args = self.sysargs; cmd = self.cmd
-    err_str = Helper.render_email_template(
+        sys_args = self.sysargs; cmd = self.cmd
+        err_str = Helper.render_email_template(
             "%s DETECTED A TIMEOUT ON FOLLOWING COMMAND:" % self.scriptname,
             sys_args,
             cmd
             )
 
-    if sys_args.emails:
-        self.send_email(subject='%s (%s): successful execution! [%s]' %
-                ( 
+        if sys_args.emails:
+            self.send_email(subject='%s (%s): timeout detected! [%s]' % (
                     Helper.trim_if_needed(sys_args.cmd, max_length=20),
-                    platform.node().capitalize(),
-                    self.scriptname,
-                    ),
-                self.send_email(subject='%s (%s - %s): timeout detected!' %
-                    (self.subjectname, platform.node().capitalize(), Helper.trim_if_needed(sys_args.cmd, max_length=20)),
+                        platform.node().capitalize(),self.scriptname),
                     content=err_str)
-    else:
-        print err_str
+        else:
+            print err_str
 
 
     def handle_error(self):
-    """Called when a command did not finish successfully."""
+        """Called when a command did not finish successfully."""
         sys_args = self.sys_args; cmd = self.cmd
 
         err_str = Helper.render_email_template(
@@ -120,11 +115,11 @@ fromaddr=
             )
 
         if sys_args.emails:
-        self.send_email(subject='%s (%s - %s): failure detected!' %
-            (self.subjectname, platform.node().capitalize(), Helper.trim_if_needed(sys_args.cmd, max_length=20)),
-            content=err_str)
+            self.send_email(subject='%s (%s - %s): failure detected!' %
+                (self.subjectname, platform.node().capitalize(), Helper.trim_if_needed(sys_args.cmd, max_length=20)),
+                content=err_str)
         else:
-        print err_str
+            print err_str
 
         sys.exit(-1)
 
@@ -143,10 +138,10 @@ fromaddr=
         emails = emails.split(',')
 
         for toaddr in emails:
-        emailMsg = email.MIMEMultipart.MIMEMultipart('mixed')
-        emailMsg['To'] = toaddr
-        #             emailMsg['From'] = sys_args.fromaddr
-        emailMsg['Subject'] = subject.replace('"', "'")
-        emailMsg.attach(email.mime.Text.MIMEText(content, _charset='utf-8'))
-        self.mailer.sendmail(emailMsg)
+            emailMsg = email.MIMEMultipart.MIMEMultipart('mixed')
+            emailMsg['To'] = toaddr
+            #             emailMsg['From'] = sys_args.fromaddr
+            emailMsg['Subject'] = subject.replace('"', "'")
+            emailMsg.attach(email.mime.Text.MIMEText(content, _charset='utf-8'))
+            self.mailer.sendmail(emailMsg)
 
