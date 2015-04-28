@@ -11,13 +11,13 @@ class CronWrapper(object):
         """Handles comamnds that are parsed via argparse."""
         self.scriptname = scriptname
         self.subjectname = "cc"
-        
+
         if not sys_args.time:
             sys_args.time = '1h'
 
         if sys_args.verbose is not False:
             sys_args.verbose = True
-            
+
 #         if sys_args.ini is not False:
 #             self.sys_args = True
 #         if sys_args.kill is not False:
@@ -58,80 +58,80 @@ fromaddr=
         sys_args = self.sys_args; cmd = self.cmd
         """Called if a command did finish successfuly."""
         out_str = Helper.render_email_template(
-            '%s RAN COMMAND SUCCESSFULLY:' % self.scriptname,
-            sys_args,
-            cmd
-        )
+                '%s RAN COMMAND SUCCESSFULLY:' % self.scriptname,
+                sys_args,
+                cmd
+                )
 
         if sys_args.verbose:
             if sys_args.emails:
                 self.send_email(subject='%s (%s): successful execution! [%s]' %
-                       ( 
-			 Helper.trim_if_needed(sys_args.cmd, max_length=20),
-			platform.node().capitalize(),
-			self.scriptname,
-			),
-                           content=out_str)
+                        ( 
+                            Helper.trim_if_needed(sys_args.cmd, max_length=20),
+                            platform.node().capitalize(),
+                            self.scriptname,
+                            ),
+                        content=out_str)
             else:
                 print out_str
 
     def handle_general(self, subj_str, content_str):
-	self.send_email(subject='%s (%s): %s [%s]' %
-	       ( 
-			Helper.trim_if_needed(sys_args.cmd, max_length=20),
-			platform.node().capitalize(),
-			subj_str,
-			self.scriptname,
-		), 
+        self.send_email(subject='%s (%s): %s [%s]' %
+                ( 
+                    Helper.trim_if_needed(sys_args.cmd, max_length=20),
+                    platform.node().capitalize(),
+                    subj_str,
+                    self.scriptname,
+                    ), 
                 content=err_str)
 
     def handle_timeout(self):
         """Called if a command exceeds its running time."""
 
-        sys_args = self.sysargs; cmd = self.cmd
-        err_str = Helper.render_email_template(
+    sys_args = self.sysargs; cmd = self.cmd
+    err_str = Helper.render_email_template(
             "%s DETECTED A TIMEOUT ON FOLLOWING COMMAND:" % self.scriptname,
             sys_args,
             cmd
-        )
+            )
 
-        if sys_args.emails:
-		self.send_email(subject='%s (%s): successful execution! [%s]' %
-		       ( 
-			 Helper.trim_if_needed(sys_args.cmd, max_length=20),
-			platform.node().capitalize(),
-			self.scriptname,
-			),
-            self.send_email(subject='%s (%s - %s): timeout detected!' %
-                       (self.subjectname, platform.node().capitalize(), Helper.trim_if_needed(sys_args.cmd, max_length=20)),
-                       content=err_str)
-        else:
-            print err_str
+    if sys_args.emails:
+        self.send_email(subject='%s (%s): successful execution! [%s]' %
+                ( 
+                    Helper.trim_if_needed(sys_args.cmd, max_length=20),
+                    platform.node().capitalize(),
+                    self.scriptname,
+                    ),
+                self.send_email(subject='%s (%s - %s): timeout detected!' %
+                    (self.subjectname, platform.node().capitalize(), Helper.trim_if_needed(sys_args.cmd, max_length=20)),
+                    content=err_str)
+    else:
+        print err_str
 
 
     def handle_error(self):
-        """Called when a command did not finish successfully."""
+    """Called when a command did not finish successfully."""
         sys_args = self.sys_args; cmd = self.cmd
 
         err_str = Helper.render_email_template(
             "%s DETECTED FAILURE OR ERROR OUTPUT FOR THE COMMAND:" % self.scriptname,
             sys_args,
             cmd
-        )
+            )
 
         if sys_args.emails:
-            self.send_email(subject='%s (%s - %s): failure detected!' %
-                       (self.subjectname, platform.node().capitalize(), Helper.trim_if_needed(sys_args.cmd, max_length=20)),
-                       content=err_str)
+        self.send_email(subject='%s (%s - %s): failure detected!' %
+            (self.subjectname, platform.node().capitalize(), Helper.trim_if_needed(sys_args.cmd, max_length=20)),
+            content=err_str)
         else:
-            print err_str
+        print err_str
 
         sys.exit(-1)
 
     def handle_test_email(self):
         subject='%s (%s - %s): Testing' % \
-                   (self.subjectname, platform.node().capitalize(), Helper.trim_if_needed("test email", max_length=20)),
-        # subject = 'Host %s: %s test mail'% (platform.node().capitalize(), self.scriptname)
+                (self.subjectname, platform.node().capitalize(), Helper.trim_if_needed("test email", max_length=20)),
+                # subject = 'Host %s: %s test mail'% (platform.node().capitalize(), self.scriptname)
         content = 'just a test mail, yo! :)'
 
         self.send_email(subject, content)
@@ -141,19 +141,12 @@ fromaddr=
         """Sends an email via `mail`."""
         emails = self.sys_args.emails
         emails = emails.split(',')
-        
+
         for toaddr in emails:
-            emailMsg = email.MIMEMultipart.MIMEMultipart('mixed')
-            emailMsg['To'] = toaddr
-#             emailMsg['From'] = sys_args.fromaddr
-            emailMsg['Subject'] = subject.replace('"', "'")
-            emailMsg.attach(email.mime.Text.MIMEText(content, _charset='utf-8'))
-            self.mailer.sendmail(emailMsg)
-            #  smtp.sendmail(emailMsg['From'], emailMsg['To'], emailMsg.as_string())
-                    
-
-
-
-
-
+        emailMsg = email.MIMEMultipart.MIMEMultipart('mixed')
+        emailMsg['To'] = toaddr
+        #             emailMsg['From'] = sys_args.fromaddr
+        emailMsg['Subject'] = subject.replace('"', "'")
+        emailMsg.attach(email.mime.Text.MIMEText(content, _charset='utf-8'))
+        self.mailer.sendmail(emailMsg)
 
