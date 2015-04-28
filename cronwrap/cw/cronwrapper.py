@@ -76,38 +76,19 @@ fromaddr=
         """Called if a command exceeds its running time."""
 
         sys_args = self.sysargs; cmd = self.cmd
-        err_str = Helper.render_email_template(
-            "%s DETECTED A TIMEOUT ON FOLLOWING COMMAND:" % self.scriptname,
-            sys_args,
-            cmd
-            )
+        content_elem = 'DETECTED A TIMEOUT ON FOLLOWING COMMAND:'
+        subj_elem= 'timeout detected!'
 
-        if sys_args.emails:
-            self.send_email(subject='%s (%s): timeout detected! [%s]' % (
-                    Helper.trim_if_needed(sys_args.cmd, max_length=20),
-                        platform.node().capitalize(),self.scriptname),
-                    content=err_str)
-        else:
-            print err_str
-
+        self.handle_general(subj_elem=subj_elem, content_elem=content_elem);
 
     def handle_error(self):
         """Called when a command did not finish successfully."""
         sys_args = self.sys_args; cmd = self.cmd
 
-        err_str = Helper.render_email_template(
-            "%s DETECTED FAILURE OR ERROR OUTPUT FOR THE COMMAND:" % self.scriptname,
-            sys_args,
-            cmd
-            )
+        content_elem = 'DETECTED FAILURE OR ERROR OUTPUT FOR THE COMMAND:'
+        subj_elem= 'failure detected!'
 
-        if sys_args.emails:
-            self.send_email(subject='%s (%s - %s): failure detected!' %
-                (self.subjectname, platform.node().capitalize(), Helper.trim_if_needed(sys_args.cmd, max_length=20)),
-                content=err_str)
-        else:
-            print err_str
-
+        self.handle_general(subj_elem=subj_elem, content_elem=content_elem);
         sys.exit(-1)
 
     def handle_test_email(self):
