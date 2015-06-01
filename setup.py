@@ -9,7 +9,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name='croncoat',
-      version = '0.1',
+      version = '0.2',
       #  author="amix the lucky stiff",
       #  author_email="amix@amix.dk",
       #  url="http://www.amix.dk/",
@@ -29,7 +29,7 @@ setup(name='croncoat',
       packages = find_packages(),
 
       #  scripts=['cronwrap/scripts/cwscript.py'],
-      entry_points={'console_scripts': ['croncoat=cronwrap.scripts.cwscript:main']}
+      entry_points={'console_scripts': ['croncoat=croncoat.scripts.ccscript:main']}
       )
       
 #        packages=[''],
