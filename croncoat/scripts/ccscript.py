@@ -51,7 +51,7 @@ def main(input_args=None):
 """ % ((__scriptname__,) * 5)
     parser = MyParser(prog=__scriptname__, description=desc_str, formatter_class=argparse.RawTextHelpFormatter)
 
-    parser.add_argument('-c', '--cmd', nargs='+',
+    parser.add_argument('-c', '--cmd',
                         help='Run a command. Could be `%s -c "ls -la"`. No command => test email is sent.' % __scriptname__
                         )
 #     parser.add_argument('-f', '--fromaddr', help='Specify sender address for your emails. Must match your local smtp setup.')
@@ -82,9 +82,9 @@ def main(input_args=None):
 #     parser.add_argument('-k', '--kill', nargs='?', default=False, help='Terminate process after timeout (as set by -t) is exceeded.')
 
     #  handle_args(parser.parse_args())
-    if(len(sys.argv)==1): #no extra args
-        parser.print_help()
-        sys.exit(1)
+    #  if(input_args is None): #no extra args
+    #      parser.print_help()
+    #      sys.exit(1)
     sys_args = parser.parse_args(input_args)
     if(sys_args.ini is not False):
         CronWrapper.print_ini(__scriptname__)

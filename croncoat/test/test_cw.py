@@ -6,7 +6,7 @@ croncoat tests
     :license: BSD
 """
 import unittest
-from cronwrap.scripts.cwscript import main
+from croncoat.scripts.ccscript import main
 
 class Test(unittest.TestCase):
 

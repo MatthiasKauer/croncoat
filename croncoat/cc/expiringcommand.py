@@ -38,6 +38,7 @@ class ExpiringCommand(object):
 
     def __init__(self, command, timeout):
 #         self.cmd = command.split()
+        #  print(command)
         self.cmd = shlex.split(command)
         self.timeout = Helper.parse_time_to_secs(timeout)
         self.start_time = time.time()
