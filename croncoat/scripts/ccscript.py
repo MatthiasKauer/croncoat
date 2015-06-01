@@ -88,6 +88,10 @@ def main(input_args=None):
     sys_args = parser.parse_args(input_args)
     if(sys_args.ini is not False):
         CronWrapper.print_ini(__scriptname__)
+    elif(sys_args.cmd is None and sys_args.emails is None):
+        sys.stderr.write('error: neither command nor email was supplied; email alone => test email, command alone => console output\n\n')
+        parser.print_help()
+        sys.exit(1)
     else:
         cwrap = CronWrapper(sys_args, __scriptname__)
         cwrap.run()
