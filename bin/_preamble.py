@@ -6,6 +6,9 @@
 # be packaged or installed, it is only a developer convenience. By the time
 # Twisted is actually installed somewhere, the environment should already be set
 # up properly without the help of this tool.
+
+# Note (Matthias Kauer): Twisted is under MIT license.
+
 import sys, os
 path = os.path.abspath(sys.argv[0])
 while os.path.dirname(path) != path:

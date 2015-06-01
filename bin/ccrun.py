@@ -1,8 +1,9 @@
-'''
-Created on 08 Apr, 2015
+"""
+starter script to be used during development (where paths would otherwise be messed up)
 
-@author: matthias
-'''
+    :copyright: 2015 by Matthias Kauer
+    :license: BSD
+"""
 import sys
 
 try:
