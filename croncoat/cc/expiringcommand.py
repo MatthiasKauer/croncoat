@@ -1,3 +1,14 @@
+"""
+ExpiringCommand
+~~~~~~~~~~~~~~
+Signal based implementation that starts a command and kills it once a timeout
+is reached.
+Caveat: Currently does not save stdout when command is killed
+
+    :copyright: 2015 by Matthias Kauer
+    :license: BSD
+"""
+
 import time
 import signal
 import subprocess
@@ -16,10 +27,6 @@ class ExpiringCommand(object):
     def savereturn(self):
         self.run_time = time.time() - self.start_time
         self.returncode = self.p.returncode;
-        #  self.stderr = self.p.stderr.read()
-        #  self.stdout = self.p.stdout.read()
-        #  (self.stdout, self.stderr) = self.p.communicate()
-        #  self.stdout = ""
 
         #  self.stderr = "asdf"
         #  self.stdout = self.p.stdout.read()

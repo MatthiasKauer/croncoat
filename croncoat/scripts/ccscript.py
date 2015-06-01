@@ -1,32 +1,17 @@
 #!/usr/bin/env python
 
 """
-    croncoat
-    ~~~~~~~~~~~~~~
+croncoat
+~~~~~~~~~~~~~~
+A cron job wrapper that wraps jobs and enables better error reporting and command timeouts.
+croncoat added: python mail handling, better subject lines, timeout kills ongoing tasks,
+object-oriented design
 
-    A cron job wrapper that wraps jobs and enables better error reporting and command timeouts.
-
-    Example of usage::
-
-        #Will print out help
-        $ croncoat -h
-
-        #Will send out a timeout alert to cron@my_domain.com:
-        $ croncoat -c "sleep 2" -t "1s" -e cron@my_domain.com
-
-        #Will send out an error alert to cron@my_domain.com:
-        $ croncoat -c "blah" -t "1s" -e cron@my_domain.com
-
-        #Will not send any reports:
-        $ croncoat -c "ls" -e cron@my_domain.com
-
-        #Will send a successful report to cron@my_domain.com:
-        $ croncoat -c "ls" -e cron@my_domain.com -v
-
-    :copyright: 2010 by Plurk
+    :copyright (cronwrap): 2010 by Plurk
+    :copyright: 2015 by Matthias Kauer
     :license: BSD
 """
-__VERSION__ = '0.1'
+__VERSION__ = '0.2'
 __scriptname__ = 'croncoat'
 
 #  import re

@@ -1,8 +1,12 @@
-'''
-Created on 9 Apr, 2015
+"""
+Helper
+~~~~~~~~~~~~~~
+contains helper functionality: trimming messages, parsing time
 
-@author: matthias
-'''
+    :copyright (cronwrap): 2010 by Plurk
+    :license: BSD
+"""
+
 import re
 from datetime import datetime, timedelta
 

@@ -1,10 +1,20 @@
+"""
+CronWrapper
+~~~~~~~~~~~~~~
+Main module linking together mail backend, helper scripts for, e.g., output trimming;
+handles command lines as parsed by ccscript
+
+    :copyright (cronwrap): 2010 by Plurk
+    :copyright: 2015 by Matthias Kauer
+    :license: BSD
+"""
+
 import platform
 import sys
 import email
 from croncoat.cc.expiringcommand import ExpiringCommand
 from croncoat.cc.mailbackend import MailBackend
 from croncoat.cc.helper import Helper
-
 
 class CronWrapper(object):
     def __init__(self, sys_args, scriptname):
