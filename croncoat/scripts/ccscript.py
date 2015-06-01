@@ -31,10 +31,19 @@ __scriptname__ = 'croncoat'
 
 #  import re
 import argparse
-from cronwrap.cw.cronwrapper import CronWrapper
+import sys
+from croncoat.cc.cronwrapper import CronWrapper
+
+class MyParser(argparse.ArgumentParser):
+    def error(self, message):
+        sys.stderr.write('error: %s\n\n' % message)
+        self.print_help()
+        sys.exit(2)
 
 #--- Handlers ----------------------------------------------
 
+# custom parser class so I can output help whenever wrong / bad / no arguments are supplied
+#  http://stackoverflow.com/questions/4042452/display-help-message-with-python-argparse-when-script-is-called-without-any-argu
 
 #  if __name__ == '__main__':
 def main(input_args=None):
@@ -55,9 +64,9 @@ def main(input_args=None):
     Print output of successful command
         %s -v -c 'ls -la'
 """ % ((__scriptname__,) * 5)
-    parser = argparse.ArgumentParser(prog=__scriptname__, description=desc_str, formatter_class=argparse.RawTextHelpFormatter)
+    parser = MyParser(prog=__scriptname__, description=desc_str, formatter_class=argparse.RawTextHelpFormatter)
 
-    parser.add_argument('-c', '--cmd', 
+    parser.add_argument('-c', '--cmd', nargs='+',
                         help='Run a command. Could be `%s -c "ls -la"`. No command => test email is sent.' % __scriptname__
                         )
 #     parser.add_argument('-f', '--fromaddr', help='Specify sender address for your emails. Must match your local smtp setup.')
@@ -67,6 +76,8 @@ def main(input_args=None):
                         "Uses Python's email library to send emails (therefore no user names unlike original cronwrap). "
                         "If this is not set, only output to stdout." 
                         )
+
+    #  parser.add_argument('foo', nargs='+') #supposed to trigger error if no args supplied (bullshit, I didn't understand)
 
     parser.add_argument('-t', '--time',
                         help='Set the maximum running time. '
@@ -86,6 +97,9 @@ def main(input_args=None):
 #     parser.add_argument('-k', '--kill', nargs='?', default=False, help='Terminate process after timeout (as set by -t) is exceeded.')
 
     #  handle_args(parser.parse_args())
+    if(len(sys.argv)==1): #no extra args
+        parser.print_help()
+        sys.exit(1)
     sys_args = parser.parse_args(input_args)
     if(sys_args.ini is not False):
         CronWrapper.print_ini(__scriptname__)

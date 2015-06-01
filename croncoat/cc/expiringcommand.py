@@ -2,7 +2,7 @@ import time
 import signal
 import subprocess
 import shlex
-from cronwrap.cw.helper import Helper
+from croncoat.cc.helper import Helper
 
 class Alarm(Exception):
     pass

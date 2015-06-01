@@ -1,9 +1,9 @@
 import platform
 import sys
 import email
-from cronwrap.cw.expiringcommand import ExpiringCommand
-from cronwrap.cw.mailbackend import MailBackend
-from cronwrap.cw.helper import Helper
+from croncoat.cc.expiringcommand import ExpiringCommand
+from croncoat.cc.mailbackend import MailBackend
+from croncoat.cc.helper import Helper
 
 
 class CronWrapper(object):
