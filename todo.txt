@@ -1,8 +1,7 @@
-(B) 2015-04-11 Adjust readme to new croncoat 
-(C) 2015-06-02 Test whether expiring command can parse output if f.seek(0) is used
 (C) 2015-04-11 clean up code somewhat
 (D) 2015-04-27 try getting crashed output after all (file.seek might be answer) {{http://stackoverflow.com/questions/1191374/subprocess-with-timeout}} {{http://stackoverflow.com/questions/4417962/stop-reading-process-output-in-python-without-hang}}
 a (D) 2015-04-11 Test whether this wroks with python3
+x (B) 2015-04-11 Adjust readme to new croncoat 
 x (B) 2015-04-28 Adjust folder structure to remove cronwrap branding
 x (B) 2015-04-11 somet bullshit task
 x (C) 2015-04-11 add command (trimmed) to subject line for better recognizability
