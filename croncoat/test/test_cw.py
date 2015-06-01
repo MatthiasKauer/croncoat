@@ -1,8 +1,10 @@
-'''
-Created on 11 Apr, 2015
+"""
+croncoat tests
+~~~~~~~~~~~~~~
 
-@author: matthias
-'''
+    :copyright: 2015 by Matthias Kauer
+    :license: BSD
+"""
 import unittest
 from cronwrap.scripts.cwscript import main
 
