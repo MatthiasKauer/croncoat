@@ -8,6 +8,7 @@ Major differences between the two are:
 * croncoat kills commands if they take longer than the allotted timeout; cronwrap waits (potentially forever) and alerts only a posteriori.
 ** croncoat thus calls commands without full shell. Some commands may therefore not work although I'm currently only aware of non-relevant examples like ```croncoat -c 'exit(1)'```
 * Subject line have been improved to be more helpful in croncoat and there are some other minor formatting improvements.
+* Cronwrap is running reliably for many (I suppose) people for many years. Croncoat is new and must be observed more carefully.
 
 Known Issues
 ===========
