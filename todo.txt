@@ -1,4 +1,6 @@
 (C) 2015-04-11 clean up code somewhat
+(C) 2015-04-18 allow custom subject lines command
+(C) 2015-04-18 publish description on my website
 (D) 2015-04-27 try getting crashed output after all (file.seek might be answer) {{http://stackoverflow.com/questions/1191374/subprocess-with-timeout}} {{http://stackoverflow.com/questions/4417962/stop-reading-process-output-in-python-without-hang}}
 a (D) 2015-04-11 Test whether this wroks with python3
 x (B) 2015-04-11 Adjust readme to new croncoat 
