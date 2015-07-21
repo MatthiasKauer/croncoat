@@ -1,3 +1,6 @@
+[![build status](https://travis-ci.org/MatthiasKauer/croncoat.png?branch=croncoat)](https://travis-ci.org/MatthiasKauer/croncoat)
+**Note: I'm in the process of setting up travis and tests. Tests are currently not running w/o ini setup and I have issues w/ travis as well. Time will tell :)**
+
 croncoat
 ===========================================
 croncoat extends [cronwrap](https://github.com/Doist/cronwrap), a cron job wrapper that wraps jobs and enables better error reporting and command timeouts.
