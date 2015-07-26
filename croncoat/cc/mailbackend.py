@@ -12,21 +12,23 @@ import os
 import ConfigParser
 
 class MailBackend(object):
-    def __init__(self, scriptname):
+    def __init__(self, scriptpath):
         self.smtp = SMTP_SSL()
         self.cfg = ConfigParser.SafeConfigParser()
-        fname = os.path.expanduser('~/.%s.ini' % scriptname)
-        self.cfg.read(fname)
+        fname = os.path.realpath(scriptpath)
 
-#         print(self.cfg.sections())
-        #  print(self.cfg.options('Mail'))
-        self.server = self.cfg.get('Mail', 'smtpserver')
-        self.port = self.cfg.get('Mail', 'smtpport')
-        self.mailuser = self.cfg.get('Mail','user')
-        self.mailpass = self.cfg.get('Mail','pass')
-        self.fromaddr = self.cfg.get('Mail', 'fromaddr')
-        self.loggedin = False
-        
+        try:
+            self.cfg.read(fname)
+            self.server = self.cfg.get('Mail', 'smtpserver')
+            self.port = self.cfg.get('Mail', 'smtpport')
+            self.mailuser = self.cfg.get('Mail','user')
+            self.mailpass = self.cfg.get('Mail','pass')
+            self.fromaddr = self.cfg.get('Mail', 'fromaddr')
+            self.loggedin = False
+        except Exception, e:
+            import sys
+            sys.exit( "%s appears not to be an .ini file with the appropriate sections.\n \
+Call 'croncoat --ini' for an example layout of the .ini file" %scriptpath )
 
     def sendmail(self, emailMsg):
         if(not self.loggedin):

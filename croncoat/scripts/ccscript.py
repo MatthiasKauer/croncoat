@@ -17,6 +17,7 @@ __scriptname__ = 'croncoat'
 #  import re
 import argparse
 import sys
+import os
 from croncoat.cc.cronwrapper import CronWrapper
 
 class MyParser(argparse.ArgumentParser):
@@ -75,6 +76,11 @@ def main(input_args=None):
                         help='Print the configuration file format. '  
                         )
 
+    parser.add_argument('--config', default=False,
+                        help='use an .ini file with custom name and path  '
+                        '(not the default .croncoat.ini in users\' home directory'  
+                        )
+
     parser.add_argument('-v', '--verbose',
                         nargs='?', default=False,
                         help='Will send an email / print to stdout even on successful run.')
@@ -93,6 +99,14 @@ def main(input_args=None):
         parser.print_help()
         sys.exit(1)
     else:
-        cwrap = CronWrapper(sys_args, __scriptname__)
-        cwrap.run()
+        if sys_args.config is not False:
+            configpath = os.path.realpath(sys_args.config)
+        else: # default 
+            configpath = os.path.expanduser("'~/.%s.ini" % __scriptname__)
+        if os.path.exists(configpath) and os.path.isfile(configpath): 
+            cwrap = CronWrapper(sys_args, configpath)
+            cwrap.run()
+        else:
+            sys.exit("no config file detected at %s" %configpath)
+
 
