@@ -22,35 +22,40 @@ from croncoat.cc.cronwrapper import CronWrapper
 from croncoat import __version__
 
 class MyParser(argparse.ArgumentParser):
+    """custom parser class so I can output help whenever wrong / bad / no arguments are supplied"""
+#  http://stackoverflow.com/questions/4042452/display-help-message-with-python-argparse-when-script-is-called-without-any-argu
     def error(self, message):
         sys.stderr.write('error: %s\n\n' % message)
         self.print_help()
         sys.exit(2)
 
-#--- Handlers ----------------------------------------------
 
-# custom parser class so I can output help whenever wrong / bad / no arguments are supplied
-#  http://stackoverflow.com/questions/4042452/display-help-message-with-python-argparse-when-script-is-called-without-any-argu
+desc_str =  (
+"""Wrap cron jobs for better error email error reporting with command timeouts.
+Version {}
+You must create a config file (~/.{}.ini by default) to store smtp server data.
+Ideally this would be readable only by you.
+To output the format, use {} --create-ini
+
+Usage examples:
+===============
+Send test email:
+{} -e test@domain.org
+
+Send email after killing a script that takes longer than 5s
+{} -t 5s -c 'sleep 10s' -e test@domain.org
+
+Print to stdout after catching error in script;
+Note: this won't work with exit(1) b/c no real shell here
+{} -c 'python -c import sys; sys.exit(1)'
+
+Print no output for successful command
+{} -c 'ls -la'
+Print output of successful command
+{} -v -c 'ls -la'""").format(__version__, *([__scriptname__] * 7))
 
 #  if __name__ == '__main__':
 def main(input_args=None):
-    desc_str = "A cron job wrapper that wraps jobs and enables better error reporting and command timeouts. Version %s" % __version__
-    desc_str += "\nYou must create a config file ~/.%s.ini to store smtp server data (preferably readable only by you)" %__scriptname__
-    desc_str += "\nTo output the format, use %s --ini" % __scriptname__
-    desc_str += "\nUsage examples:"
-    desc_str += """
-    Send test email:
-        %s -e test@domain.org
-    Send email after killing a script that takes longer than 5s
-        %s -t 5s -c 'sleep 10s' -e test@domain.org
-    Print to stdout after catching error in script;
-    Note: this won't work with exit(1) b/c no real shell here
-        %s -c 'python -c "import sys; sys.exit(1)"'
-    Print no output for successful command
-        %s -c 'ls -la'
-    Print output of successful command
-        %s -v -c 'ls -la'
-""" % ((__scriptname__,) * 5)
     parser = MyParser(prog=__scriptname__, description=desc_str, formatter_class=argparse.RawTextHelpFormatter)
 
     parser.add_argument('-c', '--cmd',
