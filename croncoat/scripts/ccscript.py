@@ -91,7 +91,6 @@ def main(input_args=None):
                         help='Will send an email / print to stdout even on successful run.')
 
     sys_args = parser.parse_args(input_args)
-    print sys_args
     if(sys_args.print_ini is not False):
         CronWrapper.print_ini(__scriptname__)
     elif(sys_args.cmd is None and sys_args.emails is None):
@@ -103,7 +102,7 @@ def main(input_args=None):
         if sys_args.config is not False:
             configpath = os.path.realpath(sys_args.config)
         else: # default
-            configpath = os.path.expanduser("'~/.%s.ini" % __scriptname__)
+            configpath = os.path.expanduser("~/.%s.ini" % __scriptname__)
         if os.path.exists(configpath) and os.path.isfile(configpath):
             cwrap = CronWrapper(sys_args, configpath)
             cwrap.run()
