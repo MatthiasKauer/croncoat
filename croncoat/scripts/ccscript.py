@@ -76,7 +76,7 @@ def main(input_args=None):
                         "The default is 1 hour `-t 1h`. Possible values include: `-t 2h`,`-t 5m`, `-t 30s`."
                         )
 
-    parser.add_argument('--print-ini', 'print-config', nargs='?', default=False,
+    parser.add_argument('--print-ini', '--print-config', nargs='?', default=False,
                         help='Print the configuration file format. '
                             'This can be redirected to a file name to have a config skeleton.'
                         )

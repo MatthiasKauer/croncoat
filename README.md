@@ -75,3 +75,12 @@ optional arguments:
                         Will send an email / print to stdout even on successful run.
 ```
 
+Development tips
+=============
+Create virtual environment w/o site-packages. We don't need "complicated" packages for this project.
+```
+virtualenv --no-site-packages venv  #only required once; excluding site packages is default now mostly
+source venv/bin/activate    #activate venv
+which pip   #double-check
+```
+
