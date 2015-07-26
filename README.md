@@ -1,5 +1,5 @@
 [![build status](https://travis-ci.org/MatthiasKauer/croncoat.png?branch=croncoat)](https://travis-ci.org/MatthiasKauer/croncoat)
-**Note: I'm in the process of setting up travis and tests. Tests are currently not running w/o ini setup and I have issues w/ travis as well. Time will tell :)**
+**Note: Tests aren't very extensive yet. In particular: Email sending is not tested (ideas and help appreciated). It does work in practice though. On my machine ;)**
 
 croncoat
 ===========================================
@@ -40,37 +40,46 @@ PATH=/usr/local/bin:/usr/bin:/bin
 
 Alternatively, you can prefix ```/usr/local/bin/croncoat``` instead of just ```croncoat``` in crontab of course.
 
-Example
+Example usage
 ===========
 
 ```
-usage: croncoat [-h] [-c CMD [CMD ...]] [-e EMAILS] [-t TIME] [--ini [INI]]
-                [-v [VERBOSE]]
+usage: croncoat [-h] [-c CMD] [-e EMAILS] [-t TIME] [--print-ini [PRINT_INI]]
+                [--config CONFIG] [-v [VERBOSE]]
 
-A cron job wrapper that wraps jobs and enables better error reporting and command timeouts. Version 0.2
-You must create a config file ~/.croncoat.ini to store smtp server data (preferably readable only by you)
-To output the format, use croncoat --ini
+Wrap cron jobs for better error email error reporting with command timeouts.
+Version 0.3
+You must create a config file (~/.croncoat.ini by default) to store smtp server data.
+Ideally this would be readable only by you.
+To output a config skeleton, use croncoat --print-ini
+
 Usage examples:
-    Send test email:
-        croncoat -e test@domain.org
-    Send email after killing a script that takes longer than 5s
-        croncoat -t 5s -c 'sleep 10s' -e test@domain.org
-    Print to stdout after catching error in script;
-    Note: this won't work with exit(1) b/c no real shell here
-        croncoat -c 'python -c "import sys; sys.exit(1)"'
-    Print no output for successful command
-        croncoat -c 'ls -la'
-    Print output of successful command
-        croncoat -v -c 'ls -la'
+===============
+Send test email:
+croncoat -e test@domain.org
+
+Send email after killing a script that takes longer than 5s
+croncoat -t 5s -c 'sleep 10s' -e test@domain.org
+
+Print to stdout after catching error in script;
+Note: this won't work with exit(1) b/c no real shell here
+croncoat -c 'python -c import sys; sys.exit(1)'
+
+Print no output for successful command
+croncoat -c 'ls -la'
+Print output of successful command
+croncoat -v -c 'ls -la'
 
 optional arguments:
   -h, --help            show this help message and exit
-  -c CMD [CMD ...], --cmd CMD [CMD ...]
-                        Run a command. Could be `croncoat -c "ls -la"`. No command => test email is sent.
+  -c CMD, --cmd CMD     Run a command. Could be `croncoat -c "ls -la"`. No command => test email is sent.
   -e EMAILS, --emails EMAILS
-                        Send email to the following addresses if the command crashes or exceeds timeout. Uses Python's email library to send emails (therefore no user names unlike original cronwrap). If this is not set, only output to stdout.
+                        Send email to the following addresses if the command crashes or exceeds timeout. Uses Python's email library to send emails (therefore no user namesunlike original cronwrap). If this is not set, only output to stdout.
   -t TIME, --time TIME  Set the maximum running time. If this time is reached, the script will be killed and an alert email will be sent. If the script is killed stdout/stderr cannot be captured at this time! The default is 1 hour `-t 1h`. Possible values include: `-t 2h`,`-t 5m`, `-t 30s`.
-  --ini [INI]           Print the configuration file format.
+  --print-ini [PRINT_INI], --print-config [PRINT_INI]
+                        Print the configuration file format. This can be redirected to a file name to have a config skeleton.
+  --config CONFIG, --ini CONFIG, -i CONFIG
+                        use an .ini file with custom name and path  (not the default .croncoat.ini in users' home directory
   -v [VERBOSE], --verbose [VERBOSE]
                         Will send an email / print to stdout even on successful run.
 ```
