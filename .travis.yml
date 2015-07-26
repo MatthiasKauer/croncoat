@@ -4,4 +4,6 @@ python:
 # command to install dependencies
 install: "pip install -r requirements.txt"
 # command to run tests
-script: py.test
+script:
+    - cram test-cram/
+    - py.test croncoat/test

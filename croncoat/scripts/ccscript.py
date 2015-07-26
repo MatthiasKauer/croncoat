@@ -12,14 +12,13 @@ object-oriented design
     :license: BSD
 """
 #  __VERSION__ = '0.2'
-__scriptname__ = 'croncoat'
 
 #  import re
 import argparse
 import sys
 import os
 from croncoat.cc.cronwrapper import CronWrapper
-from croncoat import __version__
+from croncoat import __version__, __scriptname__
 
 class MyParser(argparse.ArgumentParser):
     """custom parser class so I can output help whenever wrong / bad / no arguments are supplied"""

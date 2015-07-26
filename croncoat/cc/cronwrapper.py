@@ -45,17 +45,20 @@ class CronWrapper(object):
             self.handle_test_email()
 
     @staticmethod
-    def print_ini(scriptname):
-        example_ini = "#example format for ~/.%s.ini (don't use quotes!)" % scriptname
-        example_ini +="""
+    def _ini_string(scriptname):
+        return (
+"""#example format for ~/.%s.ini (don't use quotes!)
 [Mail]
 smtpserver=
 smtpport=
 user=
 pass=
 fromaddr=
-"""
-        print(example_ini)
+""".format(scriptname))
+    
+    @staticmethod
+    def print_ini(scriptname):
+        print CronWrapper._ini_string(scriptname)
 
     def handle_success(self):
         sys_args = self.sys_args; cmd = self.cmd
