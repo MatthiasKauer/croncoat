@@ -11,7 +11,7 @@ object-oriented design
     :copyright: 2015 by Matthias Kauer
     :license: BSD
 """
-__VERSION__ = '0.2'
+#  __VERSION__ = '0.2'
 __scriptname__ = 'croncoat'
 
 #  import re
@@ -19,6 +19,7 @@ import argparse
 import sys
 import os
 from croncoat.cc.cronwrapper import CronWrapper
+from croncoat import __version__
 
 class MyParser(argparse.ArgumentParser):
     def error(self, message):
@@ -33,7 +34,7 @@ class MyParser(argparse.ArgumentParser):
 
 #  if __name__ == '__main__':
 def main(input_args=None):
-    desc_str = "A cron job wrapper that wraps jobs and enables better error reporting and command timeouts. Version %s" % __VERSION__
+    desc_str = "A cron job wrapper that wraps jobs and enables better error reporting and command timeouts. Version %s" % __version__
     desc_str += "\nYou must create a config file ~/.%s.ini to store smtp server data (preferably readable only by you)" %__scriptname__
     desc_str += "\nTo output the format, use %s --ini" % __scriptname__
     desc_str += "\nUsage examples:"
@@ -55,15 +56,13 @@ def main(input_args=None):
     parser.add_argument('-c', '--cmd',
                         help='Run a command. Could be `%s -c "ls -la"`. No command => test email is sent.' % __scriptname__
                         )
-#     parser.add_argument('-f', '--fromaddr', help='Specify sender address for your emails. Must match your local smtp setup.')
 
     parser.add_argument('-e', '--emails',
                         help='Send email to the following addresses if the command crashes or exceeds timeout. '
-                        "Uses Python's email library to send emails (therefore no user names unlike original cronwrap). "
+                        "Uses Python's email library to send emails (therefore no user names"
+                        "unlike original cronwrap). "
                         "If this is not set, only output to stdout."
                         )
-
-    #  parser.add_argument('foo', nargs='+') #supposed to trigger error if no args supplied (bullshit, I didn't understand)
 
     parser.add_argument('-t', '--time',
                         help='Set the maximum running time. '
@@ -72,30 +71,26 @@ def main(input_args=None):
                         "The default is 1 hour `-t 1h`. Possible values include: `-t 2h`,`-t 5m`, `-t 30s`."
                         )
 
-    parser.add_argument('--ini', nargs='?', default=False,
+    parser.add_argument('--create-ini', nargs='?', default=False,
                         help='Print the configuration file format. '
                         )
 
-    parser.add_argument('--config', default=False,
+    parser.add_argument('--config', '--ini', '-i', default=False,
                         help='use an .ini file with custom name and path  '
-                        '(not the default .croncoat.ini in users\' home directory'
+                        "(not the default .croncoat.ini in users' home directory"
                         )
 
     parser.add_argument('-v', '--verbose',
                         nargs='?', default=False,
                         help='Will send an email / print to stdout even on successful run.')
 
-#     parser.add_argument('-k', '--kill', nargs='?', default=False, help='Terminate process after timeout (as set by -t) is exceeded.')
-
-    #  handle_args(parser.parse_args())
-    #  if(input_args is None): #no extra args
-    #      parser.print_help()
-    #      sys.exit(1)
     sys_args = parser.parse_args(input_args)
-    if(sys_args.ini is not False):
+    print sys_args
+    if(sys_args.create_ini is not False):
         CronWrapper.print_ini(__scriptname__)
     elif(sys_args.cmd is None and sys_args.emails is None):
-        sys.stderr.write('error: neither command nor email was supplied; email alone => test email, command alone => console output\n\n')
+        sys.stderr.write('error: neither command nor email was supplied;'
+             'email alone => test email, command alone => console output\n\n')
         parser.print_help()
         sys.exit(1)
     else:
