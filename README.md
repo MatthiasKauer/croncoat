@@ -6,7 +6,7 @@ croncoat
 croncoat extends [cronwrap](https://github.com/Doist/cronwrap), a cron job wrapper that wraps jobs and enables better error reporting and command timeouts.
 Major differences between the two are:
 
-* croncoat relies on python email and smtplib libraries (configuration easier if system mailer not setup yet); cronwrap uses the system mailer ```mail``` (configuration more invovled, but maybe already done). 
+* croncoat relies on python email and smtplib libraries (configuration easier if system mailer not setup yet); cronwrap uses the system mailer ```mail``` (configuration more invovled, but maybe already done).
 (Note: I started here because I wanted to alter the email from address and the syntax for command-line mail differed between different Linux flavors that I tested.)
 * croncoat kills commands if they take longer than the allotted timeout; cronwrap waits (potentially forever) and alerts only a posteriori.
 ** croncoat thus calls commands without full shell. Some commands may therefore not work although I'm currently only aware of non-relevant examples like ```croncoat -c 'exit(1)'```
@@ -23,7 +23,7 @@ Installing
 ===========
 
 ###Pypi
-croncoat is currently not pypi yet. 
+croncoat is currently not pypi yet.
 
 ###Git installation
 To install the bleeding-edge version (WARNING: Read path issues below!):
@@ -38,7 +38,7 @@ WARNING: On my system croncoat wasn't in the shorter path that cron uses during 
 PATH=/usr/local/bin:/usr/bin:/bin
 ```
 
-Alternatively, you can prefix ```/usr/local/bin/croncoat``` instead of just ```croncoat``` in crontab of course. 
+Alternatively, you can prefix ```/usr/local/bin/croncoat``` instead of just ```croncoat``` in crontab of course.
 
 Example
 ===========
@@ -51,12 +51,12 @@ A cron job wrapper that wraps jobs and enables better error reporting and comman
 You must create a config file ~/.croncoat.ini to store smtp server data (preferably readable only by you)
 To output the format, use croncoat --ini
 Usage examples:
-    Send test email: 
+    Send test email:
         croncoat -e test@domain.org
     Send email after killing a script that takes longer than 5s
         croncoat -t 5s -c 'sleep 10s' -e test@domain.org
-    Print to stdout after catching error in script; 
-    Note: this won't work with exit(1) b/c no real shell here 
+    Print to stdout after catching error in script;
+    Note: this won't work with exit(1) b/c no real shell here
         croncoat -c 'python -c "import sys; sys.exit(1)"'
     Print no output for successful command
         croncoat -c 'ls -la'
@@ -70,7 +70,7 @@ optional arguments:
   -e EMAILS, --emails EMAILS
                         Send email to the following addresses if the command crashes or exceeds timeout. Uses Python's email library to send emails (therefore no user names unlike original cronwrap). If this is not set, only output to stdout.
   -t TIME, --time TIME  Set the maximum running time. If this time is reached, the script will be killed and an alert email will be sent. If the script is killed stdout/stderr cannot be captured at this time! The default is 1 hour `-t 1h`. Possible values include: `-t 2h`,`-t 5m`, `-t 30s`.
-  --ini [INI]           Print the configuration file format. 
+  --ini [INI]           Print the configuration file format.
   -v [VERBOSE], --verbose [VERBOSE]
                         Will send an email / print to stdout even on successful run.
 ```

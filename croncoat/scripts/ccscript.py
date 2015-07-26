@@ -35,7 +35,7 @@ desc_str =  (
 Version {}
 You must create a config file (~/.{}.ini by default) to store smtp server data.
 Ideally this would be readable only by you.
-To output the format, use {} --create-ini
+To output a config skeleton, use {} --print-ini
 
 Usage examples:
 ===============
@@ -76,8 +76,9 @@ def main(input_args=None):
                         "The default is 1 hour `-t 1h`. Possible values include: `-t 2h`,`-t 5m`, `-t 30s`."
                         )
 
-    parser.add_argument('--create-ini', nargs='?', default=False,
+    parser.add_argument('--print-ini', 'print-config', nargs='?', default=False,
                         help='Print the configuration file format. '
+                            'This can be redirected to a file name to have a config skeleton.'
                         )
 
     parser.add_argument('--config', '--ini', '-i', default=False,
@@ -91,7 +92,7 @@ def main(input_args=None):
 
     sys_args = parser.parse_args(input_args)
     print sys_args
-    if(sys_args.create_ini is not False):
+    if(sys_args.print_ini is not False):
         CronWrapper.print_ini(__scriptname__)
     elif(sys_args.cmd is None and sys_args.emails is None):
         sys.stderr.write('error: neither command nor email was supplied;'

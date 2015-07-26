@@ -18,7 +18,6 @@ from croncoat.cc.helper import Helper
 
 class CronWrapper(object):
     def __init__(self, sys_args, scriptname):
-        """Handles comamnds that are parsed via argparse."""
         self.scriptname = scriptname
         self.subjectname = "cc"
 
@@ -33,7 +32,7 @@ class CronWrapper(object):
         self.mailer = MailBackend(scriptname)
 
     def run(self):
-        sys_args = self.sys_args          
+        sys_args = self.sys_args
         if sys_args.cmd:
             self.cmd = ExpiringCommand( sys_args.cmd, sys_args.time)
             self.cmd.Run()
@@ -62,7 +61,7 @@ fromaddr=
     def handle_success(self):
         sys_args = self.sys_args; cmd = self.cmd
         """Called if a command did finish successfuly."""
-        content_elem = 'RAN COMMAND SUCCESSFULLY' 
+        content_elem = 'RAN COMMAND SUCCESSFULLY'
         subj_elem='success'
 
         if sys_args.verbose:
