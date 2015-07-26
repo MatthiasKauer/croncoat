@@ -36,14 +36,14 @@ def main(input_args=None):
     desc_str = "A cron job wrapper that wraps jobs and enables better error reporting and command timeouts. Version %s" % __VERSION__
     desc_str += "\nYou must create a config file ~/.%s.ini to store smtp server data (preferably readable only by you)" %__scriptname__
     desc_str += "\nTo output the format, use %s --ini" % __scriptname__
-    desc_str += "\nUsage examples:" 
+    desc_str += "\nUsage examples:"
     desc_str += """
-    Send test email: 
+    Send test email:
         %s -e test@domain.org
     Send email after killing a script that takes longer than 5s
         %s -t 5s -c 'sleep 10s' -e test@domain.org
-    Print to stdout after catching error in script; 
-    Note: this won't work with exit(1) b/c no real shell here 
+    Print to stdout after catching error in script;
+    Note: this won't work with exit(1) b/c no real shell here
         %s -c 'python -c "import sys; sys.exit(1)"'
     Print no output for successful command
         %s -c 'ls -la'
@@ -60,7 +60,7 @@ def main(input_args=None):
     parser.add_argument('-e', '--emails',
                         help='Send email to the following addresses if the command crashes or exceeds timeout. '
                         "Uses Python's email library to send emails (therefore no user names unlike original cronwrap). "
-                        "If this is not set, only output to stdout." 
+                        "If this is not set, only output to stdout."
                         )
 
     #  parser.add_argument('foo', nargs='+') #supposed to trigger error if no args supplied (bullshit, I didn't understand)
@@ -71,14 +71,14 @@ def main(input_args=None):
                         "If the script is killed stdout/stderr cannot be captured at this time! "
                         "The default is 1 hour `-t 1h`. Possible values include: `-t 2h`,`-t 5m`, `-t 30s`."
                         )
-    
+
     parser.add_argument('--ini', nargs='?', default=False,
-                        help='Print the configuration file format. '  
+                        help='Print the configuration file format. '
                         )
 
     parser.add_argument('--config', default=False,
                         help='use an .ini file with custom name and path  '
-                        '(not the default .croncoat.ini in users\' home directory'  
+                        '(not the default .croncoat.ini in users\' home directory'
                         )
 
     parser.add_argument('-v', '--verbose',
@@ -101,9 +101,9 @@ def main(input_args=None):
     else:
         if sys_args.config is not False:
             configpath = os.path.realpath(sys_args.config)
-        else: # default 
+        else: # default
             configpath = os.path.expanduser("'~/.%s.ini" % __scriptname__)
-        if os.path.exists(configpath) and os.path.isfile(configpath): 
+        if os.path.exists(configpath) and os.path.isfile(configpath):
             cwrap = CronWrapper(sys_args, configpath)
             cwrap.run()
         else:
