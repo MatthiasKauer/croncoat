@@ -6,6 +6,8 @@ Setup
 Running without config produces error
 
   $ croncoat -c 'ls -la'
+  no config file detected at .* (re)
+  [1]
 
 Setting up config makes echo command succeed
 
