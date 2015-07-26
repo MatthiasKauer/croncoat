@@ -99,6 +99,8 @@ A timed out command creates an error
   [255]
 
 
+Removing config file at the end
+  $ rm $CCINI
 
 
 
