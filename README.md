@@ -23,7 +23,7 @@ Installing
 ===========
 
 ###Pypi
-croncoat is currently not pypi yet.
+croncoat is currently not on pypi yet.
 
 ###Git installation
 To install the bleeding-edge version (WARNING: Read path issues below!):
