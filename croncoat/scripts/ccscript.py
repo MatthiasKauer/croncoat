@@ -104,7 +104,8 @@ def main(input_args=None):
         else: # default
             configpath = os.path.expanduser("~/.%s.ini" % __scriptname__)
         if os.path.exists(configpath) and os.path.isfile(configpath):
-            cwrap = CronWrapper(sys_args, configpath)
+            #  print(configpath)
+            cwrap = CronWrapper(sys_args, __scriptname__, configpath)
             cwrap.run()
         else:
             sys.exit("no config file detected at %s" %configpath)

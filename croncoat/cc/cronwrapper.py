@@ -17,7 +17,7 @@ from croncoat.cc.mailbackend import MailBackend
 from croncoat.cc.helper import Helper
 
 class CronWrapper(object):
-    def __init__(self, sys_args, scriptname):
+    def __init__(self, sys_args, scriptname, configpath):
         self.scriptname = scriptname
         self.subjectname = "cc"
 
@@ -28,8 +28,7 @@ class CronWrapper(object):
             sys_args.verbose = True
 
         self.sys_args = sys_args
-
-        self.mailer = MailBackend(scriptname)
+        self.mailer = MailBackend(configpath)
 
     def run(self):
         sys_args = self.sys_args
