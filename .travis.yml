@@ -7,3 +7,10 @@ install: "pip install -r requirements.txt"
 script:
     - cram test-cram/
     - py.test croncoat/test
+
+#whitelist only certain branches
+branches:
+    only:
+        - master
+        - develop
+
