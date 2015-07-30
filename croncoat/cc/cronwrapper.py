@@ -49,11 +49,12 @@ class CronWrapper(object):
         return (
 """#example format for ~/.%s.ini (don't use quotes!)
 [Mail]
-smtpserver=
+smtpserver=mailtrap.io
 smtpport=
 user=
 pass=
 fromaddr=
+use_sendmailfallback=True
 """.format(scriptname))
     
     @staticmethod
