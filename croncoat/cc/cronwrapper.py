@@ -11,24 +11,48 @@ handles command lines as parsed by ccscript
 
 import platform
 import sys
+import os
 import email
+import logging
+import ConfigParser
 from croncoat.cc.expiringcommand import ExpiringCommand
 from croncoat.cc.mailbackend import MailBackend
 from croncoat.cc.helper import Helper
 
+logging.basicConfig(level=logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger('croncoat')
+
 class CronWrapper(object):
     def __init__(self, sys_args, scriptname, configpath):
+        self.parse_ini(configpath) # self.cfg is set with configparser
+        handler = logging.FileHandler(self.cfg.get('Mail', 'logfile'))
+        handler.setLevel( eval(self.cfg.get('Mail', 'loglevel', 'logging.INFO')) )
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        logger.info( "croncoat arguments: %s" %str(sys_args).replace("Namespace(", "").replace(")", "") )
         self.scriptname = scriptname
         self.subjectname = "cc"
-
         if not sys_args.time:
             sys_args.time = '1h'
-
         if sys_args.verbose is not False:
             sys_args.verbose = True
-
         self.sys_args = sys_args
-        self.mailer = MailBackend(configpath)
+        self.mailer = MailBackend(self.cfg)
+
+    def parse_ini(self, configpath):
+        default_configvalues = {'use_sendmailfallback': False,
+                                'sendmail_path': '/usr/sbin/sendmail',
+                                'logfile': '/var/log/croncoat.log',
+                                'loglevel': 'logging.INFO'}
+        try:
+            self.cfg = ConfigParser.SafeConfigParser(defaults=default_configvalues)
+            fname = os.path.realpath(configpath)
+            self.cfg.read(fname)
+        except Exception, e:
+            msg = "config file %s could not be parsed, gave exception: %s" %(configpath, str(e))
+            logger.error(msg)
+            print msg
 
     def run(self):
         sys_args = self.sys_args
@@ -56,7 +80,9 @@ pass=
 fromaddr=
 use_sendmailfallback=True
 sendmail_path=/usr/sbin/sendmail
-log=/var/log/croncoat.log
+logfile=/var/log/croncoat.log
+loglevel=logging.INFO
+
 """.format(scriptname))
     
     @staticmethod
@@ -73,6 +99,7 @@ log=/var/log/croncoat.log
             self.handle_general(subj_elem=subj_elem, content_elem=content_elem);
 
     def handle_general(self, subj_elem, content_elem):
+        logger.info("cmd: %s | result: %s " %(cmd, subj_elem))
         sys_args = self.sys_args; cmd = self.cmd
         out_str = Helper.render_email_template('%s %s: ' % \
                 (self.scriptname, content_elem), sys_args, cmd)
