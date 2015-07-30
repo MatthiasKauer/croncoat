@@ -55,6 +55,7 @@ user=
 pass=
 fromaddr=
 use_sendmailfallback=True
+log=/var/log/croncoat.log
 """.format(scriptname))
     
     @staticmethod
