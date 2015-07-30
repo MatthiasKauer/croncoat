@@ -94,12 +94,11 @@ loglevel=logging.INFO
         """Called if a command did finish successfuly."""
         content_elem = 'RAN COMMAND SUCCESSFULLY'
         subj_elem='success'
-
+        logger.info("cmd: %s | result: %s " %(self.sys_args.cmd, subj_elem))
         if sys_args.verbose:
             self.handle_general(subj_elem=subj_elem, content_elem=content_elem);
 
     def handle_general(self, subj_elem, content_elem):
-        logger.info("cmd: %s | result: %s " %(cmd, subj_elem))
         sys_args = self.sys_args; cmd = self.cmd
         out_str = Helper.render_email_template('%s %s: ' % \
                 (self.scriptname, content_elem), sys_args, cmd)
@@ -115,22 +114,21 @@ loglevel=logging.INFO
 
     def handle_timeout(self):
         """Called if a command exceeds its running time."""
-
         sys_args = self.sysargs; cmd = self.cmd
         content_elem = 'DETECTED A TIMEOUT ON FOLLOWING COMMAND'
         subj_elem= 'timeout'
-
+        logger.error("cmd: %s | result: %s " %(self.sys_args.cmd, subj_elem))
         self.handle_general(subj_elem=subj_elem, content_elem=content_elem);
+        sys.exit(1)
 
     def handle_error(self):
         """Called when a command did not finish successfully."""
         sys_args = self.sys_args; cmd = self.cmd
-
         content_elem = 'DETECTED FAILURE OR ERROR OUTPUT FOR THE COMMAND'
         subj_elem= 'failure'
-
+        logger.info("cmd: %s | result: %s " %(self.sys_args.cmd, subj_elem))
         self.handle_general(subj_elem=subj_elem, content_elem=content_elem);
-        sys.exit(-1)
+        sys.exit(1)
 
     def handle_test_email(self):
         subject='%s (%s): Testing' % \
