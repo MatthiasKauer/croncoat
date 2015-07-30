@@ -55,6 +55,7 @@ user=
 pass=
 fromaddr=
 use_sendmailfallback=True
+sendmail_path=/usr/sbin/sendmail
 log=/var/log/croncoat.log
 """.format(scriptname))
     
