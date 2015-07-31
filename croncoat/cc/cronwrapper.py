@@ -30,6 +30,7 @@ class CronWrapper(object):
         handler.setLevel( eval(self.cfg.get('Mail', 'loglevel', 'logging.INFO')) )
         handler.setFormatter(formatter)
         logger.addHandler(handler)
+        logger.propagate = False
         logger.info( "croncoat arguments: %s" %str(sys_args).replace("Namespace(", "").replace(")", "") )
         self.scriptname = scriptname
         self.subjectname = "cc"
