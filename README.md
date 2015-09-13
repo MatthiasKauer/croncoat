@@ -8,8 +8,7 @@ Major differences between the two are:
 
 * croncoat relies on python email and smtplib libraries (configuration easier if system mailer not setup yet); cronwrap uses the system mailer ```mail``` (configuration more invovled, but maybe already done).
 (Note: I started here because I wanted to alter the email from address and the syntax for command-line mail differed between different Linux flavors that I tested.)
-* croncoat kills commands if they take longer than the allotted timeout; cronwrap waits (potentially forever) and alerts only a posteriori.
-** croncoat thus calls commands without full shell. Some commands may therefore not work although I'm currently only aware of non-relevant examples like ```croncoat -c 'exit(1)'```
+* croncoat kills commands if they take longer than the allotted timeout; cronwrap waits (potentially forever) and alerts only a posteriori. **croncoat thus calls commands without full shell.** Some commands may therefore not work although I'm currently only aware of non-relevant examples like ```croncoat -c 'exit(1)'```
 * Subject line have been improved to be more helpful in croncoat and there are some other minor formatting improvements.
 * Cronwrap is running reliably for many (I suppose) people for many years. Croncoat is new and must be observed more carefully.
 
@@ -21,12 +20,18 @@ Known Issues
 
 Installing
 ===========
+**Read path issues below for use in crontab!**
 
 ###Pypi
-croncoat is currently not on pypi yet.
+croncoat is on PyPI: https://pypi.python.org/pypi/croncoat
+
+Install via:
+```
+pip install croncoat
+```
 
 ###Git installation
-To install the bleeding-edge version (WARNING: Read path issues below!):
+To install the bleeding-edge version :
 
     $ git clone <this repo>
     $ sudo python setup.py install
