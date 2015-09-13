@@ -20,16 +20,18 @@ Known Issues
 
 Installing
 ===========
+**Read path issues below for use in crontab!**
 
 ###Pypi
 croncoat is on PyPI: https://pypi.python.org/pypi/croncoat
+
 Install via:
 ```
 pip install croncoat
 ```
 
 ###Git installation
-To install the bleeding-edge version (WARNING: Read path issues below!):
+To install the bleeding-edge version :
 
     $ git clone <this repo>
     $ sudo python setup.py install
