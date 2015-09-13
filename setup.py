@@ -12,7 +12,7 @@ def read(*paths):
         return f.read()
 
 setup(name='croncoat',
-    version = __version__
+    version = __version__,
     author="Matthias Kauer",
     author_email="mk.software@zuez.org",
     url="https://github.com/MatthiasKauer/croncoat",
@@ -32,10 +32,10 @@ setup(name='croncoat',
     packages = find_packages(),
 
 #  scripts=['cronwrap/scripts/cwscript.py'],
-    entry_points={'console_scripts': ['croncoat=croncoat.scripts.ccscript:main']}
-    platforms=["Any"],
+    entry_points={'console_scripts': ['croncoat=croncoat.scripts.ccscript:main']},
+    platforms=["Unix"],
     license="BSD",
-    keywords='cron wrapper crontab cronjob',
+    keywords='cron wrapper crontab cronjob email',
     description="croncoat extends cronwrap, a cron job wrapper that wraps jobs and enables better error reporting and command timeouts.",
     long_description=read('README.md'),
 )
