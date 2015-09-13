@@ -1,3 +1,4 @@
+(B) 2015-09-13 offer a fallback that sends mail w/o SSL
 (C) 2015-04-11 clean up code somewhat
 (C) 2015-04-18 allow custom subject lines command
 (C) 2015-04-18 publish description on my website
