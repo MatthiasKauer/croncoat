@@ -68,9 +68,9 @@ A failing command creates an error
   [255]
 
 A timed out command creates an error
-  $ croncoat -t 1s -c 'sleep 2'
+  $ croncoat -t 3s -c "$TESTDIR/sleep_and_echo.sh"
   croncoat DETECTED FAILURE OR ERROR OUTPUT FOR THE COMMAND: 
-  sleep 2
+  */test-cram/sleep_and_echo.sh (glob)
   
   COMMAND STARTED:
   .* (re)
@@ -79,24 +79,19 @@ A timed out command creates an error
   .* (re)
   
   COMMAND RAN FOR:
-  1 seconds (0.00 hours)
+  4 seconds (0.00 hours)
   
   COMMAND'S TIMEOUT IS SET AT:
-  1s
+  3s
   
   RETURN CODE WAS:
-  None
+  1
   
   ERROR OUTPUT:
-  Can't capture output if terminated early (sorry, but I just spent 4h trying to get this)
-  Best option at this points seems to be the queue implementation here: 
-  http://stackoverflow.com/questions/375427/non-blocking-read-on-a-subprocess-pipe-in-python
   
   
   STANDARD OUTPUT:
-  Can't capture output if terminated early (sorry, but I just spent 4h trying to get this)
-  Best option at this points seems to be the queue implementation here: 
-  http://stackoverflow.com/questions/375427/non-blocking-read-on-a-subprocess-pipe-in-python
+  slept 1 times in total
   
   [255]
 

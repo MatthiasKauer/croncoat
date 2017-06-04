@@ -26,12 +26,11 @@ setup(name='croncoat',
     ],
 
     install_requires=[
-      'argparse>=1.1'
+      'argparse>=1.1',
+      'subprocess32>=3.2.7',
     ],
-#  packages = ['cronwrap/cw', 'cronwrap/scripts'],
     packages = find_packages(),
 
-#  scripts=['cronwrap/scripts/cwscript.py'],
     entry_points={'console_scripts': ['croncoat=croncoat.scripts.ccscript:main']},
     platforms=["Unix"],
     license="BSD",
