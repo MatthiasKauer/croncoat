@@ -1,19 +1,18 @@
 """
 MailBackend
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
 reads smtp config from ini file and sends out emails as directed by main
 
     :copyright: 2015 by Matthias Kauer
     :license: BSD
 """
 
-from smtplib import SMTP_SSL
+from smtplib import SMTP_SSL, SMTP
 import os
 import ConfigParser
 
 class MailBackend(object):
     def __init__(self, scriptpath):
-        self.smtp = SMTP_SSL()
         self.cfg = ConfigParser.SafeConfigParser()
         fname = os.path.realpath(scriptpath)
 
@@ -29,13 +28,23 @@ class MailBackend(object):
             import sys
             sys.exit( "%s appears not to be an .ini file with the appropriate sections.\n \
 Call 'croncoat --ini' for an example layout of the .ini file" %scriptpath )
+        try:
+            self.starttls = self.cfg.get('Mail', 'starttls')
+        except Exception, e:
+            self.starttls = 'No'
+
 
     def sendmail(self, emailMsg):
         if(not self.loggedin):
             emailMsg['From']=self.fromaddr
-            
-            self.smtp.connect(self.server, self.port)
+
+            if self.starttls in [True,1,"1","True","TRUE","true","yes","Yes","YES"]:
+                self.smtp = SMTP(self.server, int(self.port))
+                self.smtp.starttls()
+            else:
+                self.smtp = SMTP_SSL(self.server, self.port)
             self.smtp.login(self.mailuser, self.mailpass)
+
             self.loggedin = True
 
         self.smtp.sendmail(emailMsg['From'], emailMsg['To'], emailMsg.as_string())
@@ -43,6 +52,3 @@ Call 'croncoat --ini' for an example layout of the .ini file" %scriptpath )
     def __exit__(self):
         print("exiting MailBackend")
         self.smtp.quit()
-
-
-
