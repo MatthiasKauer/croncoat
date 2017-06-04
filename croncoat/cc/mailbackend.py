@@ -23,32 +23,31 @@ class MailBackend(object):
             self.mailuser = self.cfg.get('Mail','user')
             self.mailpass = self.cfg.get('Mail','pass')
             self.fromaddr = self.cfg.get('Mail', 'fromaddr')
+            self.security = self.cfg.get('Mail', 'security')
             self.loggedin = False
         except Exception, e:
             import sys
             sys.exit( "%s appears not to be an .ini file with the appropriate sections.\n \
 Call 'croncoat --ini' for an example layout of the .ini file" %scriptpath )
-        try:
-            self.starttls = self.cfg.get('Mail', 'starttls')
-        except Exception, e:
-            self.starttls = 'No'
 
 
     def sendmail(self, emailMsg):
         if(not self.loggedin):
-            emailMsg['From']=self.fromaddr
-
-            if self.starttls in [True,1,"1","True","TRUE","true","yes","Yes","YES"]:
+            if self.security.lower() == 'starttls':
                 self.smtp = SMTP(self.server, int(self.port))
                 self.smtp.starttls()
-            else:
+            elif self.security.lower() == 'none':
+                self.smtp = SMTP(self.server, int(self.port))
+            elif self.security.lower() == 'ssl':
                 self.smtp = SMTP_SSL(self.server, self.port)
-            self.smtp.login(self.mailuser, self.mailpass)
 
+            self.smtp.login(self.mailuser, self.mailpass)
             self.loggedin = True
 
+        emailMsg['From']=self.fromaddr
         self.smtp.sendmail(emailMsg['From'], emailMsg['To'], emailMsg.as_string())
 
     def __exit__(self):
         print("exiting MailBackend")
         self.smtp.quit()
+
