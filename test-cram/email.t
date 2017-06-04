@@ -45,7 +45,6 @@ Send test email
   _accept_subprocess(): asyncore loop exited.
 .*To: admin@matthiaskauer.github.io.* (re)
 
-End smtp server
-
-  $ kill $CC_SMTP_PID
+Remove config file and end smtp server
+  $ rm $CCINI; kill $CC_SMTP_PID
   Got signal 15, shutting down.
