@@ -43,8 +43,9 @@ Call 'croncoat --ini' for an example layout of the .ini file" %scriptpath )
                 self.smtp.starttls()
             else:
                 self.smtp = SMTP_SSL(self.server, self.port)
-            self.smtp.login(self.mailuser, self.mailpass)
 
+            if self.mailuser != "": # test server does not handle login
+                self.smtp.login(self.mailuser, self.mailpass)
             self.loggedin = True
 
         self.smtp.sendmail(emailMsg['From'], emailMsg['To'], emailMsg.as_string())
@@ -52,3 +53,4 @@ Call 'croncoat --ini' for an example layout of the .ini file" %scriptpath )
     def __exit__(self):
         print("exiting MailBackend")
         self.smtp.quit()
+
