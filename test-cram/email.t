@@ -4,13 +4,6 @@ Setup
   $ alias croncoat="$TESTDIR/../bin/ccrun.py -i $CCINI"
   $ export CC_SMTP_PORT
 
-Start fake email server
-
-python -m smtpd -n -c DebuggingServer localhost:8025 &
-
-  $ $TESTDIR/fakesmtp.py $TESTDIR/ssl_cert &
-  $ CC_SMTP_PID=$!
-
   $ cat << EOF > $CCINI
   > [Mail]
   > smtpserver=localhost
@@ -20,6 +13,11 @@ python -m smtpd -n -c DebuggingServer localhost:8025 &
   > fromaddr=cram@test.com
   > security=ssl
   > EOF
+
+Start fake email server
+  $ $TESTDIR/fakesmtp.py $TESTDIR/ssl_cert &
+  $ CC_SMTP_PID=$!
+  $ sleep 1
 
 
 Send test email
@@ -31,7 +29,7 @@ Send test email
   Content-Type: multipart/mixed; boundary="===============.*==" (re)
   MIME-Version: 1.0
   To: admin@matthiaskauer.github.io
-  Subject: cc (Xubfiend): Testing
+  Subject: cc (.*): Testing (re)
   From: cram@test.com
   
   --==========.* (re)
