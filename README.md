@@ -22,7 +22,7 @@ Installing
 ===========
 **Read path issues below for use in crontab!**
 
-###Pypi
+### Pypi
 croncoat is on PyPI: https://pypi.python.org/pypi/croncoat
 
 Install via:
@@ -30,13 +30,13 @@ Install via:
 pip install croncoat
 ```
 
-###Git installation
+### Git installation
 To install the bleeding-edge version :
 
     $ git clone <this repo>
     $ sudo python setup.py install
 
-###Path issues in crontab
+### Path issues in crontab
 WARNING: On my system croncoat wasn't in the shorter path that cron uses during execution. This is very confusing b/c everything works outside cron, but once that comes into play nothing runs anymore. You need to add a line like the following to crontab before the scripts you want to execute.
 
 ```
@@ -91,10 +91,18 @@ optional arguments:
 
 Development tips
 =============
+
+## Virtualenv setup
 Create virtual environment w/o site-packages. We don't need "complicated" packages for this project.
 ```
 virtualenv --no-site-packages venv  #only required once; excluding site packages is default now mostly
 source venv/bin/activate    #activate venv
 which pip   #double-check
+pip install -r requirements.txt  # install required packages
 ```
 
+## Running tests
+```
+py.test croncoat
+cram test-cram
+```
