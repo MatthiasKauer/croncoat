@@ -29,7 +29,7 @@ Send test email
   Content-Type: multipart/mixed; boundary="===============.*==" (re)
   MIME-Version: 1.0
   To: admin@matthiaskauer.github.io
-  Subject: cc (Xubfiend): Testing
+  Subject: cc (.*): Testing (re)
   From: cram@test.com
   
   --==========.* (re)
