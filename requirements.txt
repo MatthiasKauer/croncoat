@@ -4,3 +4,4 @@ py==1.4.30
 pytest==2.7.2
 wsgiref==0.1.2
 secure-smtpd
+subprocess32
