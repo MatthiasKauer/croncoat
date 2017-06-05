@@ -11,24 +11,48 @@ handles command lines as parsed by ccscript
 
 import platform
 import sys
+import os
 import email
+import logging
+import ConfigParser
 from croncoat.cc.expiringcommand import ExpiringCommand
 from croncoat.cc.mailbackend import MailBackend
 from croncoat.cc.helper import Helper
 
+logging.basicConfig(level=logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger('croncoat')
+
 class CronWrapper(object):
     def __init__(self, sys_args, scriptname, configpath):
+        self.parse_ini(configpath) # self.cfg is set with configparser
+        handler = logging.FileHandler(self.cfg.get('Mail', 'logfile'))
+        handler.setLevel( eval(self.cfg.get('Mail', 'loglevel', 'logging.INFO')) )
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        logger.info( "croncoat arguments: %s" %str(sys_args).replace("Namespace(", "").replace(")", "") )
         self.scriptname = scriptname
         self.subjectname = "cc"
-
         if not sys_args.time:
             sys_args.time = '1h'
-
         if sys_args.verbose is not False:
             sys_args.verbose = True
-
         self.sys_args = sys_args
-        self.mailer = MailBackend(configpath)
+        self.mailer = MailBackend(self.cfg)
+
+    def parse_ini(self, configpath):
+        default_configvalues = {'use_sendmailfallback': False,
+                                'sendmail_path': '/usr/sbin/sendmail',
+                                'logfile': '/var/log/croncoat.log',
+                                'loglevel': 'logging.INFO'}
+        try:
+            self.cfg = ConfigParser.SafeConfigParser(defaults=default_configvalues)
+            fname = os.path.realpath(configpath)
+            self.cfg.read(fname)
+        except Exception, e:
+            msg = "config file %s could not be parsed, gave exception: %s" %(configpath, str(e))
+            logger.error(msg)
+            print msg
 
     def run(self):
         sys_args = self.sys_args
@@ -49,11 +73,16 @@ class CronWrapper(object):
         return (
 """#example format for ~/.%s.ini (don't use quotes!)
 [Mail]
-smtpserver=
+smtpserver=mailtrap.io
 smtpport=
 user=
 pass=
 fromaddr=
+use_sendmailfallback=True
+sendmail_path=/usr/sbin/sendmail
+logfile=/var/log/croncoat.log
+loglevel=logging.INFO
+
 """.format(scriptname))
     
     @staticmethod
@@ -65,7 +94,7 @@ fromaddr=
         """Called if a command did finish successfuly."""
         content_elem = 'RAN COMMAND SUCCESSFULLY'
         subj_elem='success'
-
+        logger.info("cmd: %s | result: %s " %(self.sys_args.cmd, subj_elem))
         if sys_args.verbose:
             self.handle_general(subj_elem=subj_elem, content_elem=content_elem);
 
@@ -85,22 +114,21 @@ fromaddr=
 
     def handle_timeout(self):
         """Called if a command exceeds its running time."""
-
         sys_args = self.sysargs; cmd = self.cmd
         content_elem = 'DETECTED A TIMEOUT ON FOLLOWING COMMAND'
         subj_elem= 'timeout'
-
+        logger.error("cmd: %s | result: %s " %(self.sys_args.cmd, subj_elem))
         self.handle_general(subj_elem=subj_elem, content_elem=content_elem);
+        sys.exit(1)
 
     def handle_error(self):
         """Called when a command did not finish successfully."""
         sys_args = self.sys_args; cmd = self.cmd
-
         content_elem = 'DETECTED FAILURE OR ERROR OUTPUT FOR THE COMMAND'
         subj_elem= 'failure'
-
+        logger.info("cmd: %s | result: %s " %(self.sys_args.cmd, subj_elem))
         self.handle_general(subj_elem=subj_elem, content_elem=content_elem);
-        sys.exit(-1)
+        sys.exit(1)
 
     def handle_test_email(self):
         subject='%s (%s): Testing' % \
