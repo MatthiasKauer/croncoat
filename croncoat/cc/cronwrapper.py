@@ -47,15 +47,16 @@ class CronWrapper(object):
     @staticmethod
     def _ini_string(scriptname):
         return (
-"""#example format for ~/.%s.ini (don't use quotes!)
+"""#example format for ~/.{}.ini (don't use quotes!)
 [Mail]
 smtpserver=
 smtpport=
 user=
 pass=
 fromaddr=
+security=ssl    ;ssl, starttls or none
 """.format(scriptname))
-    
+
     @staticmethod
     def print_ini(scriptname):
         print CronWrapper._ini_string(scriptname)

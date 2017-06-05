@@ -18,7 +18,7 @@ python -m smtpd -n -c DebuggingServer localhost:8025 &
   > user=bcoe
   > pass=foobar
   > fromaddr=cram@test.com
-  > starttls=0
+  > security=ssl
   > EOF
 
 
@@ -46,5 +46,6 @@ Send test email
 .*To: admin@matthiaskauer.github.io.* (re)
 
 Remove config file and end smtp server
-  $ rm $CCINI; kill $CC_SMTP_PID
+  $ rm $CCINI
+  $ kill $CC_SMTP_PID
   Got signal 15, shutting down.
