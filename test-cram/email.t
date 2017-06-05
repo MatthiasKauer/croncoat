@@ -17,7 +17,7 @@ Setup
 Start fake email server
   $ $TESTDIR/fakesmtp.py $TESTDIR/ssl_cert &
   $ CC_SMTP_PID=$!
-  $ echo $CC_SMTP_PID
+  $ sleep 1
 
 
 Send test email
