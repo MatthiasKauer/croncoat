@@ -1,8 +1,8 @@
 [![build status](https://travis-ci.org/MatthiasKauer/croncoat.png?branch=master)](https://travis-ci.org/MatthiasKauer/croncoat)
-**Note: Tests aren't very extensive yet. In particular: Email sending is not tested (ideas and help appreciated). It does work in practice though. On my machine ;)**
 
 croncoat
-===========================================
+========
+
 croncoat extends [cronwrap](https://github.com/Doist/cronwrap), a cron job wrapper that wraps jobs and enables better error reporting and command timeouts.
 Major differences between the two are:
 

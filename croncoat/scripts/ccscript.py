@@ -11,9 +11,6 @@ object-oriented design
     :copyright: 2015 by Matthias Kauer
     :license: BSD
 """
-#  __VERSION__ = '0.2'
-
-#  import re
 import argparse
 import sys
 import os
